@@ -6,6 +6,9 @@ categories: python
 ---
 
 Pyenv安装完成后，一般要按照官方文档所述，在~/.bash_profile，或/etc/profile中添加如下配置项：
+
+<!-- more -->
+
 ```bash
 export PATH="$HOME/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
