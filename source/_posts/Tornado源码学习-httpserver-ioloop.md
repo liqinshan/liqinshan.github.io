@@ -369,7 +369,7 @@ if __name__ == '__main__':
     main()
 ```
 
-###三、Tornado 2.0中，IOStream使用双端队列来缓冲数据
+### 三、Tornado 2.0
 2.0中，IOStream使用双端队列对象（deque）来缓冲从socket中读取到的数据，不再使用字符串拼接的方式。性能上是一个大的提升。
 ```python
 class IOStream(object):
