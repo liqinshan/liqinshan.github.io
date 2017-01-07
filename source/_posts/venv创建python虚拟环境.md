@@ -7,7 +7,11 @@ tags:
 categories: python
 ---
 pyenv曾经是Python的官方版本管理工具，不过从Python 3.6开始，官方推荐使用venv模块来管理虚拟环境，在使用pyenv创建虚拟环境时会弹出相关提示。
+
+<!-- more -->
+
 Python 3.6前几天刚release，我准备尝个鲜，首要的就是创建虚拟环境。
+
 ```python
 	python3.6 -m venv ~/.venvs/codex
 	source ~/.venvs/codex/bin/activate
