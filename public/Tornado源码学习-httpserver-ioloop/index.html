@@ -1,0 +1,696 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="tornado," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="看了看Tornado源码，读到HTTPServer和IOLoop这里，发现逻辑还是比较复杂的，直接看有点晕。还是先看看早期版本，还可以看看Tornado一路过来的脉络。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tornado源码学习: httpserver & ioloop">
+<meta property="og:url" content="http://lqs.link/Tornado源码学习-httpserver-ioloop/index.html">
+<meta property="og:site_name" content="Live And Learn">
+<meta property="og:description" content="看了看Tornado源码，读到HTTPServer和IOLoop这里，发现逻辑还是比较复杂的，直接看有点晕。还是先看看早期版本，还可以看看Tornado一路过来的脉络。">
+<meta property="og:updated_time" content="2017-01-01T03:52:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tornado源码学习: httpserver & ioloop">
+<meta name="twitter:description" content="看了看Tornado源码，读到HTTPServer和IOLoop这里，发现逻辑还是比较复杂的，直接看有点晕。还是先看看早期版本，还可以看看Tornado一路过来的脉络。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lqs.link/Tornado源码学习-httpserver-ioloop/"/>
+
+
+
+
+
+  <title> Tornado源码学习: httpserver & ioloop | Live And Learn </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Live And Learn</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://lqs.link/Tornado源码学习-httpserver-ioloop/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="LQS">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Live And Learn">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Live And Learn" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Tornado源码学习: httpserver & ioloop
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-01T00:27:22+08:00">
+                2017-01-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        
+            <span>&nbsp; | &nbsp;
+                <span id="busuanzi_value_page_pv" ></span>次阅读
+            </span>    
+        
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>看了看Tornado源码，读到HTTPServer和IOLoop这里，发现逻辑还是比较复杂的，直接看有点晕。还是先看看早期版本，还可以看看Tornado一路过来的脉络。</p>
+<a id="more"></a>
+<h3 id="一、Tornado-1-0以前"><a href="#一、Tornado-1-0以前" class="headerlink" title="一、Tornado 1.0以前"></a>一、Tornado 1.0以前</h3><p>tornado的早期版本中（1.0之前），httpserver在初始化的时候创建ioloop实例，listen的时候创建socket对象，并由ioloop实例调用其add_handler()方法为该socket的指定事件注册处理器。<br>HTTPServer模块的简化代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HTTPServer</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="comment"># 初始化HTTPServer，创建ioloop实例</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, request_callback, io_loop=None)</span>:</span></div><div class="line">        self.request_callback = request_callback</div><div class="line">        self.io_loop = io_loop <span class="keyword">or</span> ioloop.IOLoop.instance()</div><div class="line">        self._socket = <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="comment"># 在指定端口上创建socket，并由ioloop调用其add_handler()方法为socket的指定事件注册处理器</span></div><div class="line">    <span class="comment"># add_handler()监听socket上的READ事件，事件发生的时候调用 _handle_events 进行处理</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">listen</span><span class="params">(self, port)</span>:</span></div><div class="line">        <span class="keyword">assert</span> <span class="keyword">not</span> self._socket</div><div class="line">        self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, <span class="number">0</span>)</div><div class="line">        self._socket.bind(<span class="string">""</span>, port)</div><div class="line">        self._socket.listen(<span class="number">128</span>)</div><div class="line">        self.io_loop.add_handler(self._socket.fileno(), self._handle_events, self.ioloop.READ)</div><div class="line"></div><div class="line">    <span class="comment"># socket的处理器</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_handle_events</span><span class="params">(self, fd, events)</span>:</span></div><div class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">            <span class="keyword">try</span>:</div><div class="line">                connection, address = self._socket.accept()</div><div class="line">            <span class="keyword">except</span> socket.error, e:</div><div class="line">                <span class="keyword">if</span> e[<span class="number">0</span>] <span class="keyword">in</span> (errno.EWOULDBLOCK, errno.EAGAIN):</div><div class="line">                    <span class="keyword">return</span></div><div class="line">                <span class="keyword">raise</span></div><div class="line"></div><div class="line">            <span class="keyword">try</span>:</div><div class="line">                <span class="comment"># 调用IOStream包装socket，并在HTTPConnection中进行真正的HTTP逻辑处理</span></div><div class="line">                stream = iostream.IOStream(connection, io_loop=self.io_loop)</div><div class="line">                HTTPConnection(stream, address, self.request_callback)</div><div class="line">            <span class="keyword">except</span>:</div><div class="line">                logging.error(<span class="string">''</span>)</div></pre></td></tr></table></figure></p>
+<h4 id="socket"><a href="#socket" class="headerlink" title="socket"></a>socket</h4><p>socket起源于UNIX。UNIX下一切皆文件，服务器（被动连接方）和客户端（主动链接方）各自维护一个“文件”（TCP栈缓冲区），在建立连接后，可以向各自的文件写入内容供对方读取，或读取对方内容，通讯结束后关闭文件。<br>交互流程大概是这个样子：<br>[图片占位，回头补]</p>
+<p>socket对象也是模拟这个过程进行工作：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">s = socket.socket()   <span class="comment"># 创建socket</span></div><div class="line">s.bind()     <span class="comment"># 绑定端口</span></div><div class="line">s.listen()   <span class="comment"># 进行监听</span></div></pre></td></tr></table></figure></p>
+<p>服务器端要能够同时响应多个连接请求，所以它必须<br>1）能够标记客户端<br>2）能够为每一个客户端连接创建一个新的socket对象用于响应请求<br>在具体的实践中，一般是起一个while循环，在循环里accpet客户端的连接，accept的时候创建一个新的socket：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">     <span class="comment">#创建socket对象conn</span></div><div class="line">     conn, addr = s.accept()</div><div class="line"></div><div class="line">     <span class="comment">#处理socket对象conn</span></div><div class="line">     <span class="keyword">try</span>:</div><div class="line">        <span class="keyword">pass</span></div><div class="line">     <span class="keyword">except</span>:</div><div class="line">        <span class="keyword">pass</span></div></pre></td></tr></table></figure></p>
+<h4 id="ioloop"><a href="#ioloop" class="headerlink" title="ioloop"></a>ioloop</h4><p>ioloop的实例化以及socket监听：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">self.io_loop = io_loop <span class="keyword">or</span> ioloop.IOLoop.instance()</div><div class="line">self.io_loop.add_handler(self._socket.fileno(),self._handle_events,self.io_loop.READ)</div></pre></td></tr></table></figure></p>
+<p>HTTPServer初始化的时候取出或创建一个ioloop实例，ioloop实例定义了add_handler()、update_handler()、remove_handler()三个函数为socket的指定事件添加相应的处理器，并使用add_callback()来调度下一次的IO循环上的callback，使用add_timeout()来调度基于时间的事件，在ioloop的指定时间点上执行callback。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IOLoop</span><span class="params">(object)</span>:</span></div><div class="line">     <span class="comment"># 初始化，选择恰当的事件循环机制，但ioloop的实例并不在初始化的时候创建！</span></div><div class="line">     <span class="comment"># 默认的事件循环机制为select或epoll其中的一种，选择时会首先尝试epoll</span></div><div class="line">     <span class="comment"># IOLoop中维护了四个数据结构：_handlers，_events，_callbacks, _timeouts</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, impl=None)</span>:</span></div><div class="line">          self._impl = impl <span class="keyword">or</span> _poll()</div><div class="line">          self._handlers = &#123;&#125;</div><div class="line">          self._events = &#123;&#125;</div><div class="line">          self._callbacks = set()</div><div class="line">          self._timeouts = []</div><div class="line">          self._running = <span class="keyword">False</span></div><div class="line"></div><div class="line">     <span class="comment"># 创建一个全局的ioloop实例。单例。</span></div><div class="line"><span class="meta">     @classmethod</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">instance</span><span class="params">(cls)</span>:</span></div><div class="line">          <span class="keyword">if</span> <span class="keyword">not</span> hasattr(cls, ‘_instance’):</div><div class="line">               cls._instance = cls()</div><div class="line">          <span class="keyword">return</span> cls._instance</div><div class="line"></div><div class="line">     <span class="comment"># 为socket上指定的事件注册一个handler</span></div><div class="line">     <span class="comment"># Tornado中，IO事件有三种：READ/WRITE/ERROR</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">add_handler</span><span class="params">(self, fd, handler, events)</span>:</span></div><div class="line">          self._handlers[fd] = handler</div><div class="line">          self._impl.register(fd, events | self.ERROR)</div><div class="line"></div><div class="line">     <span class="comment"># 在下一次的ioloop循环中执行指定的callback</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">add_callback</span><span class="params">(self, callback)</span>:</span></div><div class="line">          self._callbacks.add(callback)</div><div class="line">          self._wake</div><div class="line"></div><div class="line">     <span class="comment"># Tornado中，ioloop除了可以响应IO事件外，还可以调度基于时间的事件。</span></div><div class="line">     <span class="comment"># 官方文档中称，add_timeout()是time.sleep()的非阻塞版本。它在ioloop的某个时间点上执行指定的callback。</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">add_timeout</span><span class="params">(self, deadline, callback)</span>:</span></div><div class="line">          timeout = _Timeout(deadline, callback)</div><div class="line">          bisect.insort(self._timeouts,  timeout)</div><div class="line">          <span class="keyword">return</span> timeout</div><div class="line"></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">_run_callback</span><span class="params">(self, callback)</span>:</span></div><div class="line">          <span class="keyword">try</span>:</div><div class="line">               callback()</div><div class="line">          <span class="keyword">except</span> (KeyboardInterrupt, SystemExit):</div><div class="line">               <span class="keyword">raise</span></div><div class="line">          <span class="keyword">except</span>:</div><div class="line">               logging.error(‘Exception <span class="keyword">in</span> callback %s’, callback, exc_info=<span class="keyword">True</span>)</div><div class="line"></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">start</span><span class="params">(self)</span>:</span></div><div class="line">          <span class="comment"># 开始ioloop循环，处理各种callback</span></div><div class="line">          <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="comment"># 创建数据结构，保存timeout事件</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">_Timeout</span><span class="params">(object)</span>:</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, deadline, callback)</span>:</span></div><div class="line">          self.deadline = deadline</div><div class="line">          self.callback = callback</div><div class="line"></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">__cmp__</span><span class="params">(self, other)</span>:</span></div><div class="line">          <span class="keyword">return</span> cmp((self.deadline, id(self.callback)), (other.deadline, id(other.callback)))</div><div class="line"></div><div class="line"><span class="comment"># 为epoll实现register等方法</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">_EPoll</span><span class="params">(object)</span>:</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">          <span class="keyword">pass</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(self, fd, events)</span>:</span></div><div class="line">          <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="comment"># 为select实现register等方法</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">_Select</span><span class="params">(object)</span>:</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">          <span class="keyword">pass</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(self, fd, events)</span>:</span></div><div class="line">          <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="comment"># 选择系统的事件循环机制</span></div><div class="line"><span class="keyword">if</span> hasattr(select, ‘epoll’):</div><div class="line">     _poll = select.epoll</div><div class="line"><span class="keyword">else</span>:</div><div class="line">     <span class="keyword">try</span>:</div><div class="line">          <span class="keyword">import</span> epoll</div><div class="line">          _poll = _EPoll</div><div class="line">     <span class="keyword">except</span>:</div><div class="line">          <span class="keyword">import</span> sys</div><div class="line">          _poll = _Select</div></pre></td></tr></table></figure></p>
+<h4 id="iostream"><a href="#iostream" class="headerlink" title="iostream"></a>iostream</h4><p>ioloop实例调用add_handler，为socket的指定事件注册了一个处理器： _handle_events()。<br>_handle_events这个处理器中，为每一个HTTP连接创建一个socket，然后创建一个iostream对象来操作（读写）该socket。Tornado把iostream的操作包装进了HTTPConnection，在HTTPConnection中处理该HTTP连接的header，body等。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IOStream</span><span class="params">(object)</span>:</span></div><div class="line">     <span class="comment"># 把socket传入进来，为其封装一个iostream对象，通过iostream对象来操作socket</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, socket, io_loop=None)</span>:</span></div><div class="line">          self.socket = socket</div><div class="line">          self._read_buffer = <span class="string">''</span></div><div class="line">          self._write_buffer = <span class="string">''</span></div><div class="line">          self._read_bytes = <span class="keyword">None</span></div><div class="line">          self.io_loop = io_loop <span class="keyword">or</span> ioloop.IOLoop.instance()</div><div class="line">          self._state = self.io_loop.ERROR</div><div class="line">          <span class="comment"># 添加处理器，在ioloop上监听socket事件</span></div><div class="line">          self.io_loop.add_handler(self.socket.fileno(), self._handle_events, self._state)</div><div class="line"></div><div class="line">     <span class="comment"># 一旦socket就绪，ioloop根据不同的事件，来调度不同的处理器进行socket的read/write操作</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">_handle_events</span><span class="params">(self, fd, events)</span>:</span></div><div class="line">          <span class="keyword">if</span> <span class="keyword">not</span> self.socket:</div><div class="line">               logging.warnning(‘Got events <span class="keyword">for</span> closed stream %d’, fd)</div><div class="line">               <span class="keyword">return</span></div><div class="line">          <span class="keyword">if</span> events &amp; self.io_loop.READ:</div><div class="line">               self._handle_read()</div><div class="line">          <span class="keyword">if</span> <span class="keyword">not</span> self.socket:</div><div class="line">               <span class="keyword">return</span></div><div class="line">          <span class="keyword">if</span> events &amp; self.io_loop.WRITE:</div><div class="line">               self._handle_write()</div><div class="line">          <span class="keyword">if</span> <span class="keyword">not</span> self.socket:</div><div class="line">               <span class="keyword">return</span></div><div class="line">          <span class="keyword">if</span> events &amp; self.io_loop.ERROR:</div><div class="line">               self.close()</div><div class="line">               <span class="keyword">return</span></div><div class="line"></div><div class="line">          state = self.io_loop.ERROR</div><div class="line"></div><div class="line">          <span class="keyword">if</span> self._read_delimiter <span class="keyword">or</span> self._ready_bytes:</div><div class="line">               state |= self.io_loop.READ</div><div class="line">          <span class="keyword">if</span> self._write_buffer:</div><div class="line">               state |= self.io_loop.WRITE</div><div class="line">          <span class="keyword">if</span> state != self._state:</div><div class="line">               self._state = state</div><div class="line">               self.io_loop.update_handler(self.socket.fileno(), self._state)</div><div class="line">     </div><div class="line">     <span class="comment"># 进入处理流程</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">_handle_read</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            chunk = self.socket.recv(self.read_chunk_size)</div><div class="line">        <span class="keyword">except</span> socket.error, e:</div><div class="line">            self.close()</div><div class="line">            <span class="keyword">return</span></div><div class="line">        </div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> chunk:</div><div class="line">            self.close()</div><div class="line">            <span class="keyword">return</span></div><div class="line">        </div><div class="line">        <span class="comment"># 把从socket中读到的数据写入缓冲区</span></div><div class="line">        self._read_buffer += chunk</div><div class="line">        </div><div class="line">        <span class="comment"># 执行回调，消费缓冲区中的数据</span></div><div class="line">        <span class="keyword">if</span> self._read_bytes:</div><div class="line">            self._run_callback(callback, self._consume(num_bytes))</div><div class="line">        <span class="keyword">elif</span> self._read_delimiter:</div><div class="line">            self._run_callback(callback, self._consume(loc+delimiter_len))</div></pre></td></tr></table></figure></p>
+<h4 id="HTTPConnection"><a href="#HTTPConnection" class="headerlink" title="HTTPConnection"></a>HTTPConnection</h4><p>ioloop中，接受一个socket，为其创建iostream对象，然后把iostream对象传入HTTPConnection，由HTTPConnection对象来操作iostream对象。<br>底层的是socket；其上层是iostream对象，它对socket的操作进行了封装；再上层是HTTPConnection，由它来处理iostream对象。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HTTPConnection</span><span class="params">(object)</span>:</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, stream, address, request_callback)</span>:</span></div><div class="line">          self.stream = stream</div><div class="line">          self.address = address</div><div class="line">          self.request_callback = request_callback</div><div class="line">          self._request = <span class="keyword">None</span></div><div class="line">          self._request_finished = <span class="keyword">False</span></div><div class="line">          self.stream.read_until(‘\r\n\r\n’, self._on_headers)</div><div class="line"></div><div class="line">     <span class="comment"># 把数据（chunk）写入该stream，数据写入完毕，执行callback函数 _on_write_complete</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">write</span><span class="params">(self, chunk)</span>:</span></div><div class="line">          <span class="keyword">assert</span> self._request, <span class="string">'Request closed'</span></div><div class="line">          self.stream.write(chunk, self._on_write_complete)</div></pre></td></tr></table></figure></p>
+<h3 id="二、1-0版本中的新变化"><a href="#二、1-0版本中的新变化" class="headerlink" title="二、1.0版本中的新变化"></a>二、1.0版本中的新变化</h3><h4 id="HTTPServer模块中重构了listen-方法"><a href="#HTTPServer模块中重构了listen-方法" class="headerlink" title="HTTPServer模块中重构了listen()方法"></a>HTTPServer模块中重构了listen()方法</h4><p>函数应该尽可能的功能单一，所以函数体一般要足够小，功能复杂的函数可以进行拆解成几个函数。HTTPServer中的listen()拆解成了bind()和start()两个函数。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">listen</span><span class="params">(self, port, address=<span class="string">''</span>)</span>:</span></div><div class="line">    self.bind(port, address)</div><div class="line">    self.start(<span class="number">1</span>)</div></pre></td></tr></table></figure></p>
+<p>跟socket有关的部分拆分到了bind()方法中，socket处理器注册的部分拆分到了start()方法中，并进行了功能扩充：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">bind</span><span class="params">(self, port, address=<span class="string">''</span>)</span>:</span></div><div class="line">     <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="comment"># 功能扩充，支持多进程。默认使用单进程。</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">start</span><span class="params">(self, num_processes=<span class="number">1</span>)</span>:</span></div><div class="line">     <span class="comment"># 若传入的处理器数不合法（None或小于等于0），获取服务器的处理器数</span></div><div class="line">     <span class="keyword">if</span> num_processes <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">or</span> num_process &lt;= <span class="number">0</span>:</div><div class="line">          <span class="keyword">try</span>:</div><div class="line">               num_processes = os.sysconf(<span class="string">'SC_NPROCESSORS_CONF'</span>)</div><div class="line">          <span class="keyword">except</span> ValueError:</div><div class="line">               num_processes = <span class="number">1</span></div><div class="line"></div><div class="line">     <span class="comment"># 若处理器数大于1，判断ioloop实例是否已被创建</span></div><div class="line">     <span class="keyword">if</span> num_processes &gt; <span class="number">1</span> <span class="keyword">and</span> ioloop.IOLoop.initialized():</div><div class="line">          num_processes = <span class="number">1</span></div><div class="line"></div><div class="line">     <span class="comment"># fork出num_processes个子进程，为每一个子进程创建一个ioloop实例</span></div><div class="line">     <span class="keyword">if</span> num_processes &gt; <span class="number">1</span>:</div><div class="line">          <span class="keyword">for</span> i <span class="keyword">in</span> range(num_processes):</div><div class="line">               <span class="keyword">if</span> os.fork() == <span class="number">0</span>:</div><div class="line">                    self.ioloop = ioloop.IOLoop.instance()</div><div class="line">                    self.ioloop.add_handler(...)</div><div class="line">                    <span class="keyword">return</span></div><div class="line">          os.waitpid(<span class="number">-1</span>, <span class="number">0</span>)</div><div class="line">     <span class="keyword">else</span>:</div><div class="line">          <span class="keyword">if</span> <span class="keyword">not</span> self.ioloop:</div><div class="line">               self.ioloop = ioloop.IOLoop.instance()</div><div class="line">          self.ioloop.add_handler(...)</div></pre></td></tr></table></figure></p>
+<h4 id="ioloop中新增了PeriodicCallback"><a href="#ioloop中新增了PeriodicCallback" class="headerlink" title="ioloop中新增了PeriodicCallback"></a>ioloop中新增了PeriodicCallback</h4><p>该类用于周期性的调度某些任务。最开始的目的应该是支持autoreload，当Tornado的某个模块被修改时，自动重启ioloop实例：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">PeriodicCallback</span><span class="params">(object)</span>:</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(callback, callback_time, io_loop=None)</span>:</span></div><div class="line">          self.callback = callback</div><div class="line">          self.callback_time = callback_time</div><div class="line">          self.io_loop = io_loop <span class="keyword">or</span> IOLoop.instance()</div><div class="line">          self._running = <span class="keyword">True</span></div><div class="line"></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">start</span><span class="params">(self)</span>:</span></div><div class="line">          timeout = time.time() + self.callback_time / <span class="number">1000.0</span></div><div class="line">          self.io_loop.add_timeout(timeout, self._run)</div><div class="line"></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">_run</span><span class="params">(self)</span>:</span></div><div class="line">          <span class="keyword">if</span> <span class="keyword">not</span> self._running; <span class="keyword">return</span></div><div class="line">          <span class="keyword">try</span>:</div><div class="line">               self.callback()</div><div class="line">          <span class="keyword">except</span> (KeyboardInput, SystemExit):</div><div class="line">               <span class="keyword">raise</span></div><div class="line">          <span class="keyword">except</span>:</div><div class="line">               logging.error(‘Error <span class="keyword">in</span> periodic callback’, exc_info=<span class="keyword">True</span>)</div><div class="line"></div><div class="line">          self.start()</div></pre></td></tr></table></figure></p>
+<p>ioloop中对它的调度：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IOLoop</span><span class="params">(object)</span>:</span></div><div class="line">     <span class="comment"># 初始化的时候，_timeouts为空列表</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, ipml=None)</span>:</span></div><div class="line">          self._timeouts = []</div><div class="line"></div><div class="line">     <span class="comment"># 启动ioloop</span></div><div class="line">     <span class="function"><span class="keyword">def</span> <span class="title">start</span><span class="params">(self)</span>:</span></div><div class="line">          <span class="comment"># ioloop进入死循环</span></div><div class="line">          <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">               poll_timeout = <span class="number">0.2</span></div><div class="line"></div><div class="line">               <span class="comment"># 检查 _callbacks 中是否有数据写入，并进入处理流程</span></div><div class="line">               callbacks = list(self._callbacks)</div><div class="line">               <span class="keyword">for</span> callback <span class="keyword">in</span> callbacks:</div><div class="line">                    <span class="keyword">pass</span></div><div class="line"></div><div class="line">               <span class="comment"># 检查 _timeouts 中是否有数据写入，计算时间戳并比较，若过期则执行callback</span></div><div class="line">               <span class="keyword">if</span> self._timeouts:</div><div class="line">                    now = time.time()</div><div class="line">                    <span class="keyword">while</span> self._timeouts <span class="keyword">and</span> self._timeouts[<span class="number">0</span>].deadline &lt;= now:</div><div class="line">                         timeout = self._timeouts.pop(<span class="number">0</span>)</div><div class="line">                         self._run_callback(timeout.callback)</div><div class="line">                    <span class="keyword">if</span> self._timeouts:</div><div class="line">                         milliseconds = self._timeouts[<span class="number">0</span>].deadline - now</div><div class="line">                         poll_timeouts = min(milliseconds, poll_timeout)</div></pre></td></tr></table></figure></p>
+<p>autoreload是如何调用PeriodicCallback的：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">start</span><span class="params">(io_loop=None, check_time=<span class="number">500</span>)</span>:</span></div><div class="line">     io_loop = io_loop <span class="keyword">or</span> ioloop.IOLoop.instance()</div><div class="line">     modify_times = &#123;&#125;</div><div class="line">     callback = functools.partial(_reload_on_update, io_loop, modify_times)</div><div class="line">     scheduler = ioloop.PeriodicCallback(callback, check_time, io_loop=io_loop)</div><div class="line">     scheduler.start()</div></pre></td></tr></table></figure></p>
+<p>某些定时执行的任务，我们也可以直接使用它来完成。下面这个示例，每2秒钟打印一次字符串 ‘something’：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_something</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">'something'</span>)</div><div class="line">   </div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    <span class="comment"># 添加周期性任务到当前的ioloop</span></div><div class="line">    ioloop.PeriodicCallback(print_something, <span class="number">2000</span>).start()</div><div class="line">    <span class="comment"># 启动ioloop</span></div><div class="line">    ioloop.IOLoop.instance().start()</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div></pre></td></tr></table></figure></p>
+<h3 id="三、Tornado-2-0"><a href="#三、Tornado-2-0" class="headerlink" title="三、Tornado 2.0"></a>三、Tornado 2.0</h3><p>2.0中，IOStream使用双端队列对象（deque）来缓冲从socket中读取到的数据，不再使用字符串拼接的方式。性能上是一个大的提升。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IOStream</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="comment"># 改用用双端队列来缓存数据</span></div><div class="line">        self._read_buffer = collections.deque()</div><div class="line">        self._write_buffer = collections.deque()</div><div class="line">        self._read_bytes = <span class="keyword">None</span></div><div class="line">        </div><div class="line">    <span class="comment"># 相比之前的版本，Tornado对这个函数进行了拆分，这里只处理逻辑，而数据处理工作拆分了出去。</span></div><div class="line">    <span class="comment"># 从socket中读取数据并缓冲，调用函数_read_to_buffer()来完成；消费缓冲中的数据，调用_read_from_buffer()来完成</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_handle_read</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="comment"># 开启死循环从socket中读取数据</span></div><div class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">            <span class="keyword">try</span>:</div><div class="line">                <span class="comment"># 缓存从socket中读取到的数据</span></div><div class="line">                result = self._read_to_buffer()</div><div class="line">            <span class="keyword">except</span> Exception:</div><div class="line">                self.close()</div><div class="line">                <span class="keyword">return</span></div><div class="line">            </div><div class="line">            <span class="keyword">if</span> result = <span class="number">0</span>:</div><div class="line">                <span class="keyword">break</span></div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                <span class="comment"># 消费缓存中的数据</span></div><div class="line">                <span class="keyword">if</span> self._read_from_buffer():</div><div class="line">                    <span class="keyword">return</span></div><div class="line">                </div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_read_to_buffer</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            chunk = self._read_from_socket()</div><div class="line">        <span class="keyword">except</span> socket.error, e:</div><div class="line">            self.close()</div><div class="line">            <span class="keyword">raise</span></div><div class="line">            </div><div class="line">        <span class="keyword">if</span> chunk <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">            <span class="keyword">return</span> <span class="number">0</span></div><div class="line">        </div><div class="line">        <span class="comment"># 把读取到的数据添加到队列末尾</span></div><div class="line">        self._read_buffer.append(chunk)</div><div class="line">        self._read_buffer_size += len(chunk)</div><div class="line">        <span class="keyword">if</span> self._read_buffer_size &gt;= self.max_buffer_size:</div><div class="line">            <span class="keyword">pass</span></div><div class="line">        </div><div class="line">        <span class="keyword">return</span> len(chunk)</div><div class="line">        </div><div class="line">    <span class="comment"># 读取缓冲区中的数据并消费。读取方式有两种：按大小来读取，以及按分隔符来读取</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_read_from_buffer</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">if</span> self._read_bytes:</div><div class="line">            <span class="keyword">if</span> self._read_buffer_size &gt;= self._read_bytes:</div><div class="line">                num_bytes = self._read_bytes</div><div class="line">                callback = self._read_callback</div><div class="line">                self._read_callback = <span class="keyword">None</span></div><div class="line">                self._read_bytes = <span class="keyword">None</span></div><div class="line">                self._run_callback(callback, self._consume(num_bytes))</div><div class="line">                <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">        <span class="keyword">elif</span> self._read_delimiter:</div><div class="line">            <span class="comment"># 合并缓冲队列的头部</span></div><div class="line">            _merge_prefix(self._read_buffer, sys.maxin)</div><div class="line">            loc = self._read_buffer[<span class="number">0</span>].find(self._read_delimiter)</div><div class="line">            <span class="keyword">if</span> loc != <span class="number">-1</span>:</div><div class="line">                callback = self._read_callback</div><div class="line">                delimiter_len = len(self._read_delimiter)</div><div class="line">                self._read_callback = <span class="keyword">None</span></div><div class="line">                self._read_delimiter = <span class="keyword">None</span></div><div class="line">                self._run_callback(callback, self._consume(loc+delimiter_len))</div><div class="line">                <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">            </div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div></pre></td></tr></table></figure></p>
+<p>_merge_prefix(deque, size)<br>在缓冲数据时，把数据添加到双端队列的尾部，而从缓存中读取数据并消费时，是从头部读取的。那么一次读取多少数据就是个学问了，这个方法可以按照我们的需要，把队列头部的数据组织成合适的大小。</p>
+<p>IOStream模块中多次用到这个函数，如_handle_write()：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">_handle_write</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="keyword">while</span> self._write_buffer:</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            <span class="comment"># socket发送数据时，每次发送的数据大小不超过128KB</span></div><div class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self._write_buffer_frozen:</div><div class="line">                _merge_prefix(self._write_buffer, <span class="number">128</span>*<span class="number">1024</span>)</div><div class="line">            num_bytes = self.socket.send(self._write_buffer[<span class="number">0</span>])</div><div class="line">        <span class="keyword">except</span> socket.error, e:</div><div class="line">            self.close()</div><div class="line">            <span class="keyword">return</span></div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tornado/" rel="tag"># tornado</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/pyenv-no-such-command-virtualenv-init/" rel="next" title="pyenv: no such command 'virtualenv-init'">
+                <i class="fa fa-chevron-left"></i> pyenv: no such command 'virtualenv-init'
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/Python装饰器/" rel="prev" title="Python装饰器">
+                Python装饰器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="LQS" />
+          <p class="site-author-name" itemprop="name">LQS</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、Tornado-1-0以前"><span class="nav-number">1.</span> <span class="nav-text">一、Tornado 1.0以前</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#socket"><span class="nav-number">1.1.</span> <span class="nav-text">socket</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ioloop"><span class="nav-number">1.2.</span> <span class="nav-text">ioloop</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iostream"><span class="nav-number">1.3.</span> <span class="nav-text">iostream</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HTTPConnection"><span class="nav-number">1.4.</span> <span class="nav-text">HTTPConnection</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、1-0版本中的新变化"><span class="nav-number">2.</span> <span class="nav-text">二、1.0版本中的新变化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HTTPServer模块中重构了listen-方法"><span class="nav-number">2.1.</span> <span class="nav-text">HTTPServer模块中重构了listen()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ioloop中新增了PeriodicCallback"><span class="nav-number">2.2.</span> <span class="nav-text">ioloop中新增了PeriodicCallback</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、Tornado-2-0"><span class="nav-number">3.</span> <span class="nav-text">三、Tornado 2.0</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LQS</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+&nbsp;&nbsp;| 本站访问量(UV)&nbsp;<span id="busuanzi_value_site_uv"></span> &nbsp&nbsp&nbsp
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

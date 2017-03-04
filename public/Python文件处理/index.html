@@ -1,0 +1,661 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="生成器,多进程," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="python中处理大量文件时，生成器是个不错的选择。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python文件处理">
+<meta property="og:url" content="http://lqs.link/Python文件处理/index.html">
+<meta property="og:site_name" content="Live And Learn">
+<meta property="og:description" content="python中处理大量文件时，生成器是个不错的选择。">
+<meta property="og:updated_time" content="2017-01-01T04:41:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python文件处理">
+<meta name="twitter:description" content="python中处理大量文件时，生成器是个不错的选择。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lqs.link/Python文件处理/"/>
+
+
+
+
+
+  <title> Python文件处理 | Live And Learn </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Live And Learn</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://lqs.link/Python文件处理/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="LQS">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Live And Learn">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Live And Learn" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Python文件处理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-01T12:21:42+08:00">
+                2017-01-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        
+            <span>&nbsp; | &nbsp;
+                <span id="busuanzi_value_page_pv" ></span>次阅读
+            </span>    
+        
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>python中处理大量文件时，生成器是个不错的选择。<br><a id="more"></a></p>
+<p>最近一段时间（非博客上显示的成文时间。这是之前写的，也是保留下来的少数几篇博文之一）忙于充实我们的CMDB，上周采集了我们的交换机数据，预处理后生成了113个文件，总大小275KB，平均每个文件大约2.5KB。这些文件需要进一步的处理。文件内容的格式大致如此：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">            GE0/0/14 abc1-a123-1234 51023423541234003472</div><div class="line">            GE1/0/28 abc1-a123-5678 51023423541234000569</div><div class="line">Eth-Trunk48 GigabitEthernet0/0/48 abc1-a123-5566 51023423541234003472</div><div class="line">Eth-Trunk48 GigabitEthernet1/0/48 abc1-a123-5566 51023423541234000569</div></pre></td></tr></table></figure></p>
+<p>第一列为聚合口，第二列为物理口，第三列为接在该口上的服务器MAC地址，第四列为交换机SN号。若交换机没有做堆叠，聚合口为空。我们需要对交换机上采集到的MAC地址的格式进行进一步的处理，格式化成常见的ab:c1:a1:23:12:34格式。<br>即使一次性全部读入，100多个小文件处理起来也毫无压力，不过考虑到通用性，我在工具里使用生成器技术来解析这些文件，即使再多的文件也可以顺畅的处理，内存上不会有压力：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding:utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">import</span> os.path</div><div class="line"><span class="keyword">import</span> fnmatch</div><div class="line"></div><div class="line">__author__ = <span class="string">"lqs"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">_parse</span><span class="params">(lines)</span>:</span></div><div class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> lines:</div><div class="line">        *_, port, mac, sn = line.split()</div><div class="line">        <span class="keyword">yield</span> <span class="string">':'</span>.join([<span class="string">'&#123;&#125;:&#123;&#125;'</span>.format(m[:<span class="number">2</span>], m[<span class="number">2</span>:]) <span class="keyword">for</span> m <span class="keyword">in</span> mac.split(<span class="string">'-'</span>)])</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">_gen_fp</span><span class="params">(files)</span>:</span></div><div class="line">    <span class="keyword">for</span> fp <span class="keyword">in</span> files:</div><div class="line">        f = open(fp)</div><div class="line">        <span class="keyword">yield</span> f</div><div class="line">        f.close()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">_gen_file</span><span class="params">(dir_path, wildcard=<span class="string">'*.txt'</span>)</span>:</span></div><div class="line">    <span class="keyword">for</span> file <span class="keyword">in</span> fnmatch.filter(os.listdir(dir_path), wildcard):</div><div class="line">        <span class="keyword">yield</span> os.path.join(dir_path, file)</div><div class="line"></div><div class="line"><span class="comment"># `yield from &lt;iterator&gt;` 语句遍历迭代器对象, 并返回其每一个值. 具体到这里, 实际上它是在读取文件, 并返回每一行. 功效跟 `for` 循环一样, 但更简洁:</span></div><div class="line"><span class="comment">#     for f in iterators:</span></div><div class="line"><span class="comment">#         for line in f:</span></div><div class="line"><span class="comment">#             yield line</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">_gen_lines</span><span class="params">(iterators)</span>:</span></div><div class="line">    <span class="keyword">for</span> it <span class="keyword">in</span> iterators:</div><div class="line">        <span class="keyword">yield</span> <span class="keyword">from</span> it</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(dir_path)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(dir_path):</div><div class="line">        <span class="keyword">raise</span> IOError(<span class="string">'Empty directory!'</span>)</div><div class="line">    </div><div class="line">    f = _gen_file(dir_path)</div><div class="line">    fp = _gen_fp(f)</div><div class="line">    lines = _gen_lines(fp)</div><div class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> _parse(lines):</div><div class="line">        print(line)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    dp = os.path.expanduser(<span class="string">'~/Desktop/data'</span>)</div><div class="line">    main(dp)</div></pre></td></tr></table></figure></p>
+<p>在解析多文件，大文件时，使用生成器以管道方式来处理是常用的手段，可以参考： A Curious Course on Coroutines and Concurrency 。</p>
+<p>完成工作后，浏览文档时看到了多进程，想到也可以使用多进程技术来充分利用多核，以加快任务的运行：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding:utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">import</span> os.path</div><div class="line"><span class="keyword">import</span> fnmatch</div><div class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ProcessPoolExecutor</div><div class="line"></div><div class="line">__author__ = <span class="string">"lqs"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">_parse</span><span class="params">(fp)</span>:</span></div><div class="line">    mac_addrs = set()</div><div class="line"></div><div class="line">    <span class="keyword">with</span> open(fp) <span class="keyword">as</span> f:</div><div class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> f:</div><div class="line">            *_, port, mac, sn = line.split()</div><div class="line">            mac_addrs.add(<span class="string">':'</span>.join([<span class="string">'&#123;&#125;:&#123;&#125;'</span>.format(m[:<span class="number">2</span>], m[<span class="number">2</span>:]) <span class="keyword">for</span> m <span class="keyword">in</span> mac.split(<span class="string">'-'</span>)]))</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> mac_addrs</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">_parse_files</span><span class="params">(dir_path, wildcard=<span class="string">'*.txt'</span>)</span>:</span></div><div class="line">    files = [os.path.join(dir_path, f) <span class="keyword">for</span> f <span class="keyword">in</span> fnmatch.filter(os.listdir(dir_path), wildcard)]</div><div class="line">    ret = set()</div><div class="line">    </div><div class="line">    <span class="comment"># 使用ProcessPoolExecutor进行多进程任务, 默认的进程数为CPU个数.</span></div><div class="line">    <span class="comment"># `map()`是Python中很有用的小玩意, 借助正确的库可以实现并行化等强大的功能.</span></div><div class="line">    <span class="keyword">with</span> ProcessPoolExecutor() <span class="keyword">as</span> p:</div><div class="line">        <span class="keyword">for</span> mac <span class="keyword">in</span> p.map(_parse, files):</div><div class="line">            ret.update(mac)</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> ret</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(dir_path)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(dir_path):</div><div class="line">        <span class="keyword">raise</span> IOError(<span class="string">'Empty directory!'</span>)</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> mac <span class="keyword">in</span> _parse_files(dir_path):</div><div class="line">        print(mac)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    dp = os.path.expanduser(<span class="string">'~/Desktop/data'</span>)</div><div class="line">    main(dp)</div></pre></td></tr></table></figure></p>
+<p>代码看起来简洁不少！至于哪一种方式更快，内存占用更少，不好判断，所有文件总大小也不到300KB，看不出什么效果。</p>
+<p>题外话：concurrent.futures库提供一个高级接口用于异步执行调用，借助该库，我们可以轻松地实现简单的并行编程。<br>模块中的两个子类ThreadPoolExecutor和ProcessPoolExecutor分别使用多线程或多进程来异步执行函数，对于简单的并行任务而言，使用concurrent.futures比使用multiprocessing更加方便。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/生成器/" rel="tag"># 生成器</a>
+          
+            <a href="/tags/多进程/" rel="tag"># 多进程</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Python装饰器/" rel="next" title="Python装饰器">
+                <i class="fa fa-chevron-left"></i> Python装饰器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/venv创建python虚拟环境/" rel="prev" title="venv创建python虚拟环境">
+                venv创建python虚拟环境 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="LQS" />
+          <p class="site-author-name" itemprop="name">LQS</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LQS</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+&nbsp;&nbsp;| 本站访问量(UV)&nbsp;<span id="busuanzi_value_site_uv"></span> &nbsp&nbsp&nbsp
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
