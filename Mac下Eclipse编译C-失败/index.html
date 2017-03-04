@@ -92,7 +92,7 @@
 <meta property="og:description" content="在Eclipse中编译C++时失败，无法通过，报错：ld: symbol(s) not found for architecture x86_64。">
 <meta property="og:image" content="http://lqs.link/images/error.png">
 <meta property="og:image" content="http://lqs.link/images/solution.png">
-<meta property="og:updated_time" content="2017-03-04T15:17:28.000Z">
+<meta property="og:updated_time" content="2017-03-04T15:24:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mac下Eclipse编译C++失败">
 <meta name="twitter:description" content="在Eclipse中编译C++时失败，无法通过，报错：ld: symbol(s) not found for architecture x86_64。">
@@ -362,9 +362,9 @@
 <p>被这个问题困扰了两三天，最后还是Stackoverflow上的方案尝试成功。链接：<a href="http://stackoverflow.com/questions/19637164/c-linking-error-after-upgrading-to-mac-os-x-10-9-xcode-5-0-1" target="_blank" rel="external">http://stackoverflow.com/questions/19637164/c-linking-error-after-upgrading-to-mac-os-x-10-9-xcode-5-0-1</a></p>
 <p>在macOS X中，C++标准库有两种实现：libstdc++和libc++，而自从10.9开始，系统默认使用libc++作为标准库的实现。如果使用libstdc++作为编译选项，会收到一个警告：libstdc++ is deprecated; move to libc++。但是libc++会导致很多编译错误，如果以相关关键字搜索，Goole上有大量的案例。</p>
 <p>知道了原因，解决起来也很简单：打开项目的Properties（快捷键：command+i），在C/C++ Build下的Settings —&gt;Tool Settings —&gt;MacOS X C++ Linker，在编译选项中增加 -libstd=libstdc++。</p>
-<p>错误截图：<br><img src="images/error.png" alt="error"></p>
+<p>错误截图：<br><img src="/images/error.png" alt="error"></p>
 <p>添加libstdc++：</p>
-<p><img src="images/solution.png" alt="solution"></p>
+<p><img src="/images/solution.png" alt="solution"></p>
 
       
     </div>
