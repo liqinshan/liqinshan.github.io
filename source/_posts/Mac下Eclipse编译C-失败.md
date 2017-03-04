@@ -27,10 +27,10 @@ Apple LLVM version 8.0.0 (clang-800.0.42.1)
 知道了原因，解决起来也很简单：打开项目的Properties（快捷键：command+i），在C/C++ Build下的Settings —>Tool Settings —>MacOS X C++ Linker，在编译选项中增加 -libstd=libstdc++。
 
 错误截图：
-![error](images/error.png)
+![error](/images/error.png)
 
 
 
 添加libstdc++：
 
-![solution](images/solution.png)
+![solution](/images/solution.png)
