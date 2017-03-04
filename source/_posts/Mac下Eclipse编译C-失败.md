@@ -14,9 +14,11 @@ categories: c++
 OS：macOS Sierra
 Eclipse：Eclipse IDE for C/C++ Neon.2
 GCC：
-	> g++ -v
-	Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr --with-gxx-include-dir=/usr/include/c++/4.2.1
-	Apple LLVM version 8.0.0 (clang-800.0.42.1)
+```text
+> g++ -v
+Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr --with-gxx-include-dir=/usr/include/c++/4.2.1
+Apple LLVM version 8.0.0 (clang-800.0.42.1)
+```
 
 被这个问题困扰了两三天，最后还是Stackoverflow上的方案尝试成功。链接：http://stackoverflow.com/questions/19637164/c-linking-error-after-upgrading-to-mac-os-x-10-9-xcode-5-0-1
 
@@ -25,10 +27,10 @@ GCC：
 知道了原因，解决起来也很简单：打开项目的Properties（快捷键：command+i），在C/C++ Build下的Settings —>Tool Settings —>MacOS X C++ Linker，在编译选项中增加 -libstd=libstdc++。
 
 错误截图：
-![error](/images/error.png)
+![error](images/error.png)
 
 
 
 添加libstdc++：
 
-![solution]/images/solution.png)
+![solution](images/solution.png)
