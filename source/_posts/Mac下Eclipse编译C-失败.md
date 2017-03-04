@@ -32,5 +32,4 @@ Apple LLVM version 8.0.0 (clang-800.0.42.1)
 
 
 添加libstdc++：
-
 ![solution](/images/solution.png)
