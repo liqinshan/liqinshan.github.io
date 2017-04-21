@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="随笔," />
+  <meta name="keywords" content="pyenv," />
 
 
 
@@ -84,19 +84,16 @@
 
 
 
-<meta name="description" content="Blog重新开张。之前丢失了源码，很多文章找不到了，所以这个博客很久没动过了，这次趁着元旦假期重新整一下，主题也换成了Next。
-这一年就要过，这里也记个流水账，回眸过去看看都做了些什么。">
+<meta name="description" content="Pyenv安装完成后，一般要按照官方文档所述，在~/.bash_profile，或/etc/profile中添加如下配置项：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello 2017">
-<meta property="og:url" content="http://lqs.link/Hello-2017/index.html">
+<meta property="og:title" content="pyenv: no such command 'virtualenv-init'">
+<meta property="og:url" content="http://lqs.link/posts/7972/index.html">
 <meta property="og:site_name" content="Live And Learn">
-<meta property="og:description" content="Blog重新开张。之前丢失了源码，很多文章找不到了，所以这个博客很久没动过了，这次趁着元旦假期重新整一下，主题也换成了Next。
-这一年就要过，这里也记个流水账，回眸过去看看都做了些什么。">
-<meta property="og:updated_time" content="2016-12-31T15:41:14.000Z">
+<meta property="og:description" content="Pyenv安装完成后，一般要按照官方文档所述，在~/.bash_profile，或/etc/profile中添加如下配置项：">
+<meta property="og:updated_time" content="2017-04-21T15:58:51.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello 2017">
-<meta name="twitter:description" content="Blog重新开张。之前丢失了源码，很多文章找不到了，所以这个博客很久没动过了，这次趁着元旦假期重新整一下，主题也换成了Next。
-这一年就要过，这里也记个流水账，回眸过去看看都做了些什么。">
+<meta name="twitter:title" content="pyenv: no such command 'virtualenv-init'">
+<meta name="twitter:description" content="Pyenv安装完成后，一般要按照官方文档所述，在~/.bash_profile，或/etc/profile中添加如下配置项：">
 
 
 
@@ -124,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://lqs.link/Hello-2017/"/>
+  <link rel="canonical" href="http://lqs.link/posts/7972/"/>
 
 
 
 
 
-  <title> Hello 2017 | Live And Learn </title>
+  <title> pyenv: no such command 'virtualenv-init' | Live And Learn </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -253,7 +250,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://lqs.link/Hello-2017/">
+  <link itemprop="mainEntityOfPage" href="http://lqs.link/posts/7972/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="LQS">
@@ -277,7 +274,7 @@
             
             
               
-                Hello 2017
+                pyenv: no such command 'virtualenv-init'
               
             
           </h1>
@@ -292,7 +289,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-31T19:49:19+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-31T23:56:35+08:00">
                 2016-12-31
               </time>
             
@@ -315,8 +312,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/随笔/" itemprop="url" rel="index">
-                    <span itemprop="name">随笔</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
                   </a>
                 </span>
 
@@ -356,11 +353,11 @@
       
 
       
-        <p>Blog重新开张。之前丢失了源码，很多文章找不到了，所以这个博客很久没动过了，这次趁着元旦假期重新整一下，主题也换成了Next。</p>
-<p>这一年就要过，这里也记个流水账，回眸过去看看都做了些什么。</p>
+        <p>Pyenv安装完成后，一般要按照官方文档所述，在~/.bash_profile，或/etc/profile中添加如下配置项：</p>
 <a id="more"></a>
-<p>2016年换了一份工作，从写Python转向了写Java。开年时有个愿望，想写一个拿得出手能够开源的产品，现在总结下来，并没有写出什么东西。惭愧。<br>2016年把房子装修了下，搬进去了，算是一件大事完成了。<br>2016年报考了交大的升本，录取了，一个小成就完成了。<br>2016年在考驾照，整一年了，还在练大路。虽然有客观上时间比较少，去练车的次数不多的原因，但主要还是练得水平不够好，惭愧。</p>
-<p>时光从来抓不住，好的坏的，过去的都抛去，轻松再出发。Go，2017！</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> PATH=<span class="string">"<span class="variable">$HOME</span>/.pyenv/bin:<span class="variable">$PATH</span>"</span></div><div class="line"><span class="built_in">eval</span> <span class="string">"<span class="variable">$(pyenv init -)</span>"</span></div><div class="line"><span class="built_in">eval</span> <span class="string">"<span class="variable">$(pyenv virtualenv-init -)</span>"</span></div></pre></td></tr></table></figure>
+<p>但是如果Pyenv没有安装在默认位置（~/.pyenv）时，需要export PATH之前设置PYENV_ROOT，否则可能会报错：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pyenv: no such <span class="built_in">command</span> <span class="string">'virtualenv-init'</span></div></pre></td></tr></table></figure></p>
+<p>示例：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> PYENV_ROOT=/usr/<span class="built_in">local</span>/pyenv</div><div class="line"><span class="built_in">export</span> PATH=<span class="string">"/usr/local/pyenv/bin:<span class="variable">$PATH</span>"</span></div><div class="line"><span class="built_in">eval</span> <span class="string">"<span class="variable">$(pyenv init -)</span>"</span></div><div class="line"><span class="built_in">eval</span> <span class="string">"<span class="variable">$(pyenv virtualenv-init -)</span>"</span></div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -384,7 +381,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/随笔/" rel="tag"># 随笔</a>
+            <a href="/tags/pyenv/" rel="tag"># pyenv</a>
           
         </div>
       
@@ -393,14 +390,18 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/posts/32364/" rel="next" title="Hello 2017">
+                <i class="fa fa-chevron-left"></i> Hello 2017
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/pyenv-no-such-command-virtualenv-init/" rel="prev" title="pyenv: no such command 'virtualenv-init'">
-                pyenv: no such command 'virtualenv-init' <i class="fa fa-chevron-right"></i>
+              <a href="/posts/5723/" rel="prev" title="Tornado源码学习: httpserver & ioloop">
+                Tornado源码学习: httpserver & ioloop <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
