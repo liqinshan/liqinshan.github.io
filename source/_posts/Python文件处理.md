@@ -1,10 +1,11 @@
 ---
 title: Python文件处理
-date: 2017-01-01 12:21:42
-tags: 
-- 生成器
-- 多进程
+tags:
+  - 生成器
+  - 多进程
 categories: python
+abbrlink: 8190
+date: 2017-01-01 12:21:42
 ---
 python中处理大量文件时，生成器是个不错的选择。
 <!-- more -->

@@ -1,8 +1,9 @@
 ---
 title: 'Tornado源码学习: httpserver & ioloop'
-date: 2017-01-01 00:27:22
 tags: tornado
 categories: python
+abbrlink: 5723
+date: 2017-01-01 00:27:22
 ---
 看了看Tornado源码，读到HTTPServer和IOLoop这里，发现逻辑还是比较复杂的，直接看有点晕。还是先看看早期版本，还可以看看Tornado一路过来的脉络。
 

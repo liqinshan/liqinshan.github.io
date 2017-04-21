@@ -1,8 +1,9 @@
 ---
 title: Hello 2017
+tags: 随笔
+categories: 随笔
+abbrlink: 32364
 date: 2016-12-31 19:49:19
-tags: "随笔"
-categories: "随笔"
 ---
 
 Blog重新开张。之前丢失了源码，很多文章找不到了，所以这个博客很久没动过了，这次趁着元旦假期重新整一下，主题也换成了Next。

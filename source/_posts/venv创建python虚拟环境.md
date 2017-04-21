@@ -1,10 +1,11 @@
 ---
 title: venv创建python虚拟环境
-date: 2017-01-03 09:59:38
-tags: 
-- venv
-- 虚拟环境
+tags:
+  - venv
+  - 虚拟环境
 categories: python
+abbrlink: 43617
+date: 2017-01-03 09:59:38
 ---
 pyenv曾经是Python的官方版本管理工具，不过从Python 3.6开始，官方推荐使用venv模块来管理虚拟环境，在使用pyenv创建虚拟环境时会弹出相关提示。
 

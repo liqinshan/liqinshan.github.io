@@ -1,8 +1,9 @@
 ---
 title: 'pyenv: no such command ''virtualenv-init'''
-date: 2016-12-31 23:56:35
 tags: pyenv
 categories: python
+abbrlink: 7972
+date: 2016-12-31 23:56:35
 ---
 
 Pyenv安装完成后，一般要按照官方文档所述，在~/.bash_profile，或/etc/profile中添加如下配置项：

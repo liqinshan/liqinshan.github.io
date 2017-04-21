@@ -1,9 +1,10 @@
 ---
 title: Mac下Eclipse编译C++失败
-date: 2017-03-04 22:27:47
-tags: 
-- c++
+tags:
+  - c++
 categories: c++
+abbrlink: 49803
+date: 2017-03-04 22:27:47
 ---
 
 在Eclipse中编译C++时失败，无法通过，报错：ld: symbol(s) not found for architecture x86_64。

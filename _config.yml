@@ -15,8 +15,15 @@ avatar: /images/avatar.jpg
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: http://lqs.link
 root: /
-permalink: :title/
+#permalink: :title/
+permalink: posts/:abbrlink/
 permalink_defaults:
+
+# abbrlink config
+# Refer: https://github.com/rozbo/hexo-abbrlink
+abbrlink:
+  alg: crc16  #support crc16(default) and crc32
+  rep: dec    #support dec(default) and hex
 
 # Directory
 source_dir: source

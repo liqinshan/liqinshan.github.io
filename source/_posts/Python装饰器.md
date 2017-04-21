@@ -1,8 +1,9 @@
 ---
 title: Python装饰器
-date: 2017-01-01 12:02:55
 tags: 装饰器
 categories: python
+abbrlink: 43106
+date: 2017-01-01 12:02:55
 ---
 Python装饰器是个不错的东西，应用场景也比较广泛。
 <!-- more -->
