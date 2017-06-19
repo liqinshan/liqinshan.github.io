@@ -84,25 +84,19 @@
 
 
 
-<meta name="description" content="如果一个软件既有全局性配置，又有个性化配置，一般而言，个性化配置要比全局性配置的优先级要高，就像git，如果全局性配置和项目仓库里的配置有冲突，以项目仓库里的配置为准。但Maven仓库的优先级比较奇葩，项目repository（pom.xml中）的优先级比全局性的repository（settings.xml中）要低！
-&amp;lt;– more –&amp;gt;
-这意味着全局性配置给覆盖掉项目自身的配置。如">
+<meta name="description" content="如果一个软件既有全局性配置，又有个性化配置，一般而言，个性化配置要比全局性配置的优先级要高，就像git，如果全局性配置和项目仓库里的配置有冲突，以项目仓库里的配置为准。但Maven仓库的优先级比较奇葩，项目repository（pom.xml中）的优先级比全局性的repository（settings.xml中）要低！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Maven仓库设置">
 <meta property="og:url" content="http://lqs.link/posts/41722/index.html">
 <meta property="og:site_name" content="Live And Learn">
-<meta property="og:description" content="如果一个软件既有全局性配置，又有个性化配置，一般而言，个性化配置要比全局性配置的优先级要高，就像git，如果全局性配置和项目仓库里的配置有冲突，以项目仓库里的配置为准。但Maven仓库的优先级比较奇葩，项目repository（pom.xml中）的优先级比全局性的repository（settings.xml中）要低！
-&amp;lt;– more –&amp;gt;
-这意味着全局性配置给覆盖掉项目自身的配置。如">
+<meta property="og:description" content="如果一个软件既有全局性配置，又有个性化配置，一般而言，个性化配置要比全局性配置的优先级要高，就像git，如果全局性配置和项目仓库里的配置有冲突，以项目仓库里的配置为准。但Maven仓库的优先级比较奇葩，项目repository（pom.xml中）的优先级比全局性的repository（settings.xml中）要低！">
 <meta property="og:image" content="http://lqs.link/images/stackoverflow.png">
 <meta property="og:image" content="http://lqs.link/images/active-profile.png">
 <meta property="og:image" content="http://lqs.link/images/purge.png">
-<meta property="og:updated_time" content="2017-06-19T14:14:48.000Z">
+<meta property="og:updated_time" content="2017-06-19T14:19:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Maven仓库设置">
-<meta name="twitter:description" content="如果一个软件既有全局性配置，又有个性化配置，一般而言，个性化配置要比全局性配置的优先级要高，就像git，如果全局性配置和项目仓库里的配置有冲突，以项目仓库里的配置为准。但Maven仓库的优先级比较奇葩，项目repository（pom.xml中）的优先级比全局性的repository（settings.xml中）要低！
-&amp;lt;– more –&amp;gt;
-这意味着全局性配置给覆盖掉项目自身的配置。如">
+<meta name="twitter:description" content="如果一个软件既有全局性配置，又有个性化配置，一般而言，个性化配置要比全局性配置的优先级要高，就像git，如果全局性配置和项目仓库里的配置有冲突，以项目仓库里的配置为准。但Maven仓库的优先级比较奇葩，项目repository（pom.xml中）的优先级比全局性的repository（settings.xml中）要低！">
 <meta name="twitter:image" content="http://lqs.link/images/stackoverflow.png">
 
 
@@ -310,6 +304,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -342,7 +358,7 @@
 
       
         <p>如果一个软件既有全局性配置，又有个性化配置，一般而言，个性化配置要比全局性配置的优先级要高，就像git，如果全局性配置和项目仓库里的配置有冲突，以项目仓库里的配置为准。<br>但Maven仓库的优先级比较奇葩，项目repository（pom.xml中）的优先级比全局性的repository（settings.xml中）要低！</p>
-<p>&lt;– more –&gt;</p>
+<a id="more"></a>
 <p>这意味着全局性配置给覆盖掉项目自身的配置。如果手头既有公司的项目，又有私人的项目，你没办法在项目里单独设置Maven仓库，除非你完全抛弃全局配置。</p>
 <p>我手里有两个公司的项目，一个私人的项目，公司的项目使用公司的Maven仓库，私人的项目使用阿里云的Maven仓库，怎么配置才能让这个两个Maven仓库正确的生效？<br>并不是完全没有办法的，Maven的settings.xml里支持根据条件激活特定的配置项profile，只是比较复杂，而且功能偏弱。</p>
 <p>假设你对Maven的设置已经有了基本的了解。<br>最初的想法，在profile里的file节点中，使用exists或missing来组合多个条件，确保指定项目能够正确的设置指定的repository，类似于：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;file&gt;</div><div class="line">	&lt;exists&gt;$&#123;basedir&#125;/src/main/java/...&lt;/exists&gt;</div><div class="line">	&lt;missing&gt;$&#123;basedir&#125;/src/main/java/...&lt;/missing&gt;</div><div class="line">&lt;/file&gt;</div></pre></td></tr></table></figure></p>
