@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="java,Spring,阅读笔记," />
+  <meta name="keywords" content="java,maven," />
 
 
 
@@ -84,18 +84,26 @@
 
 
 
-<meta name="description" content="第一章：Spring之旅Spring是一个开源框架，出现的目的是为了解决企业级应用开发的复杂性。Spring使用了以下4种策略来降低Java开发的复杂性：1）基于POJO的轻量级和最小侵入性编程2）通过依赖注入和面向接口实现松耦合3）基于切面和惯例进行声明式编程4）通过切面和模板减少样板式代码">
+<meta name="description" content="如果一个软件既有全局性配置，又有个性化配置，一般而言，个性化配置要比全局性配置的优先级要高，就像git，如果全局性配置和项目仓库里的配置有冲突，以项目仓库里的配置为准。但Maven仓库的优先级比较奇葩，项目repository（pom.xml中）的优先级比全局性的repository（settings.xml中）要低！
+&amp;lt;– more –&amp;gt;
+这意味着全局性配置给覆盖掉项目自身的配置。如">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spring实战之一：概览">
-<meta property="og:url" content="http://lqs.link/posts/129/index.html">
+<meta property="og:title" content="Maven仓库设置">
+<meta property="og:url" content="http://lqs.link/posts/41722/index.html">
 <meta property="og:site_name" content="Live And Learn">
-<meta property="og:description" content="第一章：Spring之旅Spring是一个开源框架，出现的目的是为了解决企业级应用开发的复杂性。Spring使用了以下4种策略来降低Java开发的复杂性：1）基于POJO的轻量级和最小侵入性编程2）通过依赖注入和面向接口实现松耦合3）基于切面和惯例进行声明式编程4）通过切面和模板减少样板式代码">
-<meta property="og:image" content="http://lqs.link/images/SpringModules.png">
-<meta property="og:updated_time" content="2017-04-21T16:56:34.000Z">
+<meta property="og:description" content="如果一个软件既有全局性配置，又有个性化配置，一般而言，个性化配置要比全局性配置的优先级要高，就像git，如果全局性配置和项目仓库里的配置有冲突，以项目仓库里的配置为准。但Maven仓库的优先级比较奇葩，项目repository（pom.xml中）的优先级比全局性的repository（settings.xml中）要低！
+&amp;lt;– more –&amp;gt;
+这意味着全局性配置给覆盖掉项目自身的配置。如">
+<meta property="og:image" content="http://lqs.link/images/stackoverflow.png">
+<meta property="og:image" content="http://lqs.link/images/active-profile.png">
+<meta property="og:image" content="http://lqs.link/images/purge.png">
+<meta property="og:updated_time" content="2017-06-19T14:14:48.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spring实战之一：概览">
-<meta name="twitter:description" content="第一章：Spring之旅Spring是一个开源框架，出现的目的是为了解决企业级应用开发的复杂性。Spring使用了以下4种策略来降低Java开发的复杂性：1）基于POJO的轻量级和最小侵入性编程2）通过依赖注入和面向接口实现松耦合3）基于切面和惯例进行声明式编程4）通过切面和模板减少样板式代码">
-<meta name="twitter:image" content="http://lqs.link/images/SpringModules.png">
+<meta name="twitter:title" content="Maven仓库设置">
+<meta name="twitter:description" content="如果一个软件既有全局性配置，又有个性化配置，一般而言，个性化配置要比全局性配置的优先级要高，就像git，如果全局性配置和项目仓库里的配置有冲突，以项目仓库里的配置为准。但Maven仓库的优先级比较奇葩，项目repository（pom.xml中）的优先级比全局性的repository（settings.xml中）要低！
+&amp;lt;– more –&amp;gt;
+这意味着全局性配置给覆盖掉项目自身的配置。如">
+<meta name="twitter:image" content="http://lqs.link/images/stackoverflow.png">
 
 
 
@@ -123,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://lqs.link/posts/129/"/>
+  <link rel="canonical" href="http://lqs.link/posts/41722/"/>
 
 
 
 
 
-  <title> Spring实战之一：概览 | Live And Learn </title>
+  <title> Maven仓库设置 | Live And Learn </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -252,7 +260,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://lqs.link/posts/129/">
+  <link itemprop="mainEntityOfPage" href="http://lqs.link/posts/41722/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="LQS">
@@ -276,7 +284,7 @@
             
             
               
-                Spring实战之一：概览
+                Maven仓库设置
               
             
           </h1>
@@ -291,8 +299,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-22T00:09:35+08:00">
-                2017-04-22
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-19T18:50:43+08:00">
+                2017-06-19
               </time>
             
 
@@ -301,28 +309,6 @@
             
           </span>
 
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -355,15 +341,22 @@
       
 
       
-        <p>第一章：Spring之旅<br>Spring是一个开源框架，出现的目的是为了解决企业级应用开发的复杂性。Spring使用了以下4种策略来降低Java开发的复杂性：<br>1）基于POJO的轻量级和最小侵入性编程<br>2）通过依赖注入和面向接口实现松耦合<br>3）基于切面和惯例进行声明式编程<br>4）通过切面和模板减少样板式代码</p>
-<a id="more"></a>
-<p>POJO：Plain Old Java Object，普通Java对象。<br>它是普通的Java类，有一些private的参数（属性），然后为其中的每个参数定义了getter和setter作为访问的接口。例：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> name;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>依赖注入：<br>依赖注入（DI）是控制反转（IoC）的一种方式，所谓依赖注入就是把实例变量传入到一个对象中去。例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DamselRescuingKnight</span> <span class="keyword">implements</span> <span class="title">Knight</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> RescueDamselQuest quest;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DamselRescuingKnight</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 紧耦合，一个对象在运行过程中需要创建另外一个跟它有依赖关系的对象</span></div><div class="line">        <span class="keyword">this</span>.quest = <span class="keyword">new</span> RescueDamselQuest();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">embarkOnQuest</span><span class="params">()</span> </span>&#123;</div><div class="line">        quest.embark();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BraveKnight</span> <span class="keyword">implements</span> <span class="title">Knight</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> Quest quest;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BraveKnight</span><span class="params">(Quest quest)</span> </span>&#123;</div><div class="line">        <span class="comment">// 依赖注入，对象不需要创建另外一个对象，只需要关注自身的逻辑</span></div><div class="line">        <span class="keyword">this</span>.quest = quest;   </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">embarkOnQuest</span><span class="params">()</span> </span>&#123;</div><div class="line">        quest.embark();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>了解Ioc和DI，可以参考：<a href="http://blog.xiaohansong.com/2015/10/21/IoC-and-DI/" target="_blank" rel="external">http://blog.xiaohansong.com/2015/10/21/IoC-and-DI/</a></p>
-<p>Spring模块：<br>Spring框架由20多个模块组成，这20多个模块可以分为6大类：<br>核心容器：Core、Context、Bean、Expression、Context support<br>Web与远程调用：Web、WebSocket、Web servlet、Web portlet<br>数据访问与集成：JDBC、ORM、OXM、Transaction、Messaging、JMS<br>面向切面：AOP、Aspects<br>Instrumentation：Instrument、Instrument Tomcat<br>测试：Test</p>
-<p>见下图：<img src="/images/SpringModules.png" alt="modules"><br>对于数据访问与集成，相比较JDBC而言，ORM会更流行一些，Spring本身不提供ORM解决方案，而是对许多流行的ORM进行了集成，包括Hibernate、Mybatis等。<br>对于Web与远程调用，Spring能够与许多流行的MVC框架集成，但它本身也提供了一个MVC框架：Spring MVC</p>
-<p>RestTemplate：<br>这是3.2版本以后提供的，这是个好东西。</p>
+        <p>如果一个软件既有全局性配置，又有个性化配置，一般而言，个性化配置要比全局性配置的优先级要高，就像git，如果全局性配置和项目仓库里的配置有冲突，以项目仓库里的配置为准。<br>但Maven仓库的优先级比较奇葩，项目repository（pom.xml中）的优先级比全局性的repository（settings.xml中）要低！</p>
+<p>&lt;– more –&gt;</p>
+<p>这意味着全局性配置给覆盖掉项目自身的配置。如果手头既有公司的项目，又有私人的项目，你没办法在项目里单独设置Maven仓库，除非你完全抛弃全局配置。</p>
+<p>我手里有两个公司的项目，一个私人的项目，公司的项目使用公司的Maven仓库，私人的项目使用阿里云的Maven仓库，怎么配置才能让这个两个Maven仓库正确的生效？<br>并不是完全没有办法的，Maven的settings.xml里支持根据条件激活特定的配置项profile，只是比较复杂，而且功能偏弱。</p>
+<p>假设你对Maven的设置已经有了基本的了解。<br>最初的想法，在profile里的file节点中，使用exists或missing来组合多个条件，确保指定项目能够正确的设置指定的repository，类似于：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;file&gt;</div><div class="line">	&lt;exists&gt;$&#123;basedir&#125;/src/main/java/...&lt;/exists&gt;</div><div class="line">	&lt;missing&gt;$&#123;basedir&#125;/src/main/java/...&lt;/missing&gt;</div><div class="line">&lt;/file&gt;</div></pre></td></tr></table></figure></p>
+<p>试了一下，发现这个方案只是看起来很美。一个file节点中同时使用多个exists或missing，或混合使用exists和missing是没有办法达到我们想要的效果的，因为Maven匹配到第一个条件就结束了，不会再往下匹配了。<br>stackoverflow上也有这个相关的问题：<br><img src="/images/stackoverflow.png" alt="stackoverflow"></p>
+<p>Refer to: <a href="https://stackoverflow.com/questions/11134636/maven-profile-activation-based-on-existence-of-several-files" target="_blank" rel="external">https://stackoverflow.com/questions/11134636/maven-profile-activation-based-on-existence-of-several-files</a></p>
+<p>所以只能使用单个exists或missing，一般而言，项目的源码文件路径中都会包含组织id（pom.xml中的groupId），可以使用它来匹配项目。<br>单个条件的潜在问题是，容易匹配到多个项目，产生歧义，就像Spring的@Profile注解一样。不过这个潜在的问题基本可以忽略，公司的项目，一般都会使用同一个Maven仓库。</p>
+<p>我手里的两个项目蛋疼的地方在于，其中一个项目使用了多模块结构，不是标准的Spring项目结构， 所以需要单独为它写一个profile。所以，三个项目，三个profile，虽然啰嗦了些，方案是可行的。</p>
+<p>其实如果想简便，最有效，也是最简单的方法是使用activeProfile，在公司的时候就启用公司的profile，在家启用家里的profile。麻烦的地方在于需要每次进行手工修改，还不如上面那个啰嗦的方案。<br>总体来说，Maven很操蛋。</p>
+<p>确定settings.xml里的profile是否被正确的激活，可以进入项目的根目录（pom.xml同级目录），执行命令：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn help:active-profiles</div></pre></td></tr></table></figure></p>
+<p>上述命令会显示哪个profile被激活，如下图。避免敏感信息，只显示私人项目：<br><img src="/images/active-profile.png" alt="active"></p>
+<p>或者直接执行如下命令进行下载依赖：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn dependency:purge-local-repository -X</div></pre></td></tr></table></figure></p>
+<p>它会显示详细的日志，可以关键字搜索是否是从正确的repository下载的文件，如下图：<br><img src="/images/purge.png" alt="purge"></p>
+<p>参考文档：<br>官方文档：<br><a href="https://maven.apache.org/settings.html#Activation" target="_blank" rel="external">https://maven.apache.org/settings.html#Activation</a><br><a href="http://maven.apache.org/guides/introduction/introduction-to-profiles.html" target="_blank" rel="external">http://maven.apache.org/guides/introduction/introduction-to-profiles.html</a></p>
+<p>中文文档：<br><a href="http://blog.csdn.net/tomato__/article/details/13025187" target="_blank" rel="external">http://blog.csdn.net/tomato__/article/details/13025187</a><br><a href="http://blog.csdn.net/wangjunjun2008/article/details/17761355" target="_blank" rel="external">http://blog.csdn.net/wangjunjun2008/article/details/17761355</a><br><a href="http://toozhao.com/2012/07/13/compare-priority-of-maven-repository/" target="_blank" rel="external">http://toozhao.com/2012/07/13/compare-priority-of-maven-repository/</a></p>
 
       
     </div>
@@ -389,9 +382,7 @@
           
             <a href="/tags/java/" rel="tag"># java</a>
           
-            <a href="/tags/Spring/" rel="tag"># Spring</a>
-          
-            <a href="/tags/阅读笔记/" rel="tag"># 阅读笔记</a>
+            <a href="/tags/maven/" rel="tag"># maven</a>
           
         </div>
       
@@ -400,8 +391,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/posts/49803/" rel="next" title="Mac下Eclipse编译C++失败">
-                <i class="fa fa-chevron-left"></i> Mac下Eclipse编译C++失败
+              <a href="/posts/129/" rel="next" title="Spring实战之一：概览">
+                <i class="fa fa-chevron-left"></i> Spring实战之一：概览
               </a>
             
           </div>
@@ -409,10 +400,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/posts/41722/" rel="prev" title="Maven仓库设置">
-                Maven仓库设置 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
