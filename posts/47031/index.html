@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="装饰器," />
+  <meta name="keywords" content="range," />
 
 
 
@@ -79,16 +79,16 @@
 
 
 
-<meta name="description" content="Python装饰器是个不错的东西，应用场景也比较广泛。">
+<meta name="description" content="工作中，遍历元素并修改其值是一个很常见的需求，而Golang中使用range遍历slice或者map非常方便，所以遇到此类需求时，我们会自然而然地想到使用range。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python装饰器">
-<meta property="og:url" content="http://liqinshan.github.io/posts/43106/index.html">
+<meta property="og:title" content="golang中的range迭代">
+<meta property="og:url" content="http://liqinshan.github.io/posts/47031/index.html">
 <meta property="og:site_name" content="Live And Learn">
-<meta property="og:description" content="Python装饰器是个不错的东西，应用场景也比较广泛。">
-<meta property="og:updated_time" content="2018-03-19T13:39:26.892Z">
+<meta property="og:description" content="工作中，遍历元素并修改其值是一个很常见的需求，而Golang中使用range遍历slice或者map非常方便，所以遇到此类需求时，我们会自然而然地想到使用range。">
+<meta property="og:updated_time" content="2018-03-19T15:26:02.102Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Python装饰器">
-<meta name="twitter:description" content="Python装饰器是个不错的东西，应用场景也比较广泛。">
+<meta name="twitter:title" content="golang中的range迭代">
+<meta name="twitter:description" content="工作中，遍历元素并修改其值是一个很常见的需求，而Golang中使用range遍历slice或者map非常方便，所以遇到此类需求时，我们会自然而然地想到使用range。">
 
 
 
@@ -118,13 +118,13 @@
 
 
 
-  <link rel="canonical" href="http://liqinshan.github.io/posts/43106/"/>
+  <link rel="canonical" href="http://liqinshan.github.io/posts/47031/"/>
 
 
 
 
 
-  <title>Python装饰器 | Live And Learn</title>
+  <title>golang中的range迭代 | Live And Learn</title>
   
 
 
@@ -231,7 +231,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://liqinshan.github.io/posts/43106/">
+    <link itemprop="mainEntityOfPage" href="http://liqinshan.github.io/posts/47031/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="LQS">
@@ -248,7 +248,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Python装饰器</h1>
+          <h1 class="post-title" itemprop="name headline">golang中的range迭代</h1>
         
 
         <div class="post-meta">
@@ -260,8 +260,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-01T12:02:55+08:00">
-                2017-01-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-19T22:47:30+08:00">
+                2018-03-19
               </time>
             
 
@@ -283,8 +283,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
                   </a>
                 </span>
 
@@ -320,9 +320,20 @@
       
 
       
-        <p>Python装饰器是个不错的东西，应用场景也比较广泛。<br><a id="more"></a><br>之前写过一个Saltstack的模块，用于查询我们的CMDB。查询操作可能会由于网络抖动等原因失败，如果查询失败，会再次进行尝试，设定它会尝试三次。这个装饰器的一个典型应用场景，而且这个装饰器还带参数。之前没怎么用过待参数的装饰器，虽然技术含量也不高，还是记录一下。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> logging</div><div class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</div><div class="line"><span class="keyword">from</span> requests.exceptions <span class="keyword">import</span> RequestException, Timeout, HTTPError</div><div class="line"></div><div class="line">log = logging.getLogger(__name__)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span><span class="params">(times, *exception_types)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">outer</span><span class="params">(func)</span>:</span></div><div class="line"><span class="meta">        @wraps(func)</span></div><div class="line">        <span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">(*args, **kwargs)</span>:</span></div><div class="line">            <span class="keyword">for</span> n <span class="keyword">in</span> range(times):</div><div class="line">                <span class="keyword">try</span>:</div><div class="line">                    <span class="keyword">return</span> func(*args, **kwargs)</div><div class="line">                <span class="keyword">except</span> RequestException:</div><div class="line">                    <span class="keyword">continue</span></div><div class="line">        <span class="keyword">return</span> inner</div><div class="line">    <span class="keyword">return</span> outer</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">QueryCMDB</span>:</span></div><div class="line">    ...</div><div class="line"></div><div class="line"><span class="meta">    @retry(3, Timeout, HTTPError)</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_get_data</span><span class="params">(self, page, size, timeout, **q_args)</span>:</span></div><div class="line">        ...</div><div class="line">        url = self.url_concat(...)</div><div class="line"></div><div class="line">        log.info(<span class="string">'url: &#123;&#125;'</span>.format(url))</div><div class="line">        <span class="keyword">with</span> self.session <span class="keyword">as</span> s:</div><div class="line">            resp = s.get(url, headers=self.xheaders(...), timeout=timeout)</div><div class="line">        <span class="keyword">return</span> resp.json()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">query</span><span class="params">(self, fields=None, timeout=None, page=<span class="number">1</span>, size=<span class="number">50</span>, **kwargs)</span>:</span></div><div class="line">        data = self._get_data(page=page, size=size, timeout=timeout, **kwargs)</div><div class="line">        <span class="keyword">if</span> data:</div><div class="line">            <span class="keyword">pass</span></div><div class="line"></div><div class="line">client = QueryCMDB(...)</div></pre></td></tr></table></figure>
-<p>对于我的这个模块而言，捕获的是RequestException，Timout和HTTPError都是它的子类，所以直接在里面写死了，所以不是很通用，但是可以很容易的进行抽象一下，提炼成更通用的装饰器。<br>就这样。</p>
+        <p>工作中，遍历元素并修改其值是一个很常见的需求，而Golang中使用range遍历slice或者map非常方便，所以遇到此类需求时，我们会自然而然地想到使用range。</p>
+<a id="more"></a>
+<p>但是我们需要了解一下range的工作方式，否则很容易被”坑”。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">	<span class="string">"fmt"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="keyword">type</span> Person <span class="keyword">struct</span> &#123;</div><div class="line">    Name <span class="keyword">string</span></div><div class="line">    Age  <span class="keyword">string</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    originList := []Person&#123;</div><div class="line">        &#123;Name: <span class="string">"allen"</span>, Age: <span class="number">20</span>&#125;,</div><div class="line">        &#123;Name: <span class="string">"jason"</span>, Age: <span class="number">30</span>&#125;,</div><div class="line">        &#123;Nmae: <span class="string">"william"</span>, Age: <span class="number">40</span>&#125;,</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    result := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]*Person)</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> _, item := <span class="keyword">range</span> originList &#123;</div><div class="line">        result[item.Name] = &amp;item</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    fmt.Println(result)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面这段代码，目的是拷贝originList里的值到result。但是它不会得到你想要的结果。</p>
+<p>原因在于，range遍历时使用的值拷贝，就是说，range在遍历的时候，会拷贝其遍历对象的值，并写入一个临时的内存地址，而这个临时内存地址在遍历过程中是复用的，就是说，在遍历第一个元素时，它拷贝该元素的值并写入临时内存地址，然后遍历第二个元素，同样拷贝第二个元素的值并写入该临时内存地址，后一个值会覆盖掉前一个值。</p>
+<p>所以，代码中range代码块中的指针<code>&amp;item</code>，指向的是临时内存地址，而非原始元素，其存储的是当前遍历元素的值。由此可以推断出，result对象的value是相同的，指向同一个内存地址。</p>
+<p>运行代码，打印结果大致如下（每次的运行的内存地址可能不同）：</p>
+<p><code>map[allen:0xc42000a060 jason:0xc42000a060 william:0xc42000a060]</code></p>
+<p>所以，我们应该尽量避免在range中使用指针，除非你明确知道自己在干什么！</p>
+<p>如果想遍历元素并修改其值，怎么办？可以使用看起来”很挫”的下标遍历：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(originList); i++ &#123;</div><div class="line">    result[originList[i].Name] = &amp;originList[i]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>或者：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> index, _ := <span class="keyword">range</span> originList &#123;</div><div class="line">    result[originList[index].Name] = &amp;originList[index]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -340,7 +351,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/装饰器/" rel="tag"># 装饰器</a>
+            <a href="/tags/range/" rel="tag"># range</a>
           
         </div>
       
@@ -353,8 +364,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/posts/5723/" rel="next" title="Tornado源码学习: httpserver & ioloop">
-                <i class="fa fa-chevron-left"></i> Tornado源码学习: httpserver & ioloop
+              <a href="/posts/41722/" rel="next" title="Maven仓库设置">
+                <i class="fa fa-chevron-left"></i> Maven仓库设置
               </a>
             
           </div>
@@ -362,10 +373,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/posts/8190/" rel="prev" title="Python文件处理">
-                Python文件处理 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
