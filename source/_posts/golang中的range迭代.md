@@ -1,6 +1,8 @@
 ---
 title: golang中的range迭代
-tags: range
+tags: 
+ - range
+ - golang
 categories: Golang
 abbrlink: 47031
 date: 2018-03-19 22:47:30
