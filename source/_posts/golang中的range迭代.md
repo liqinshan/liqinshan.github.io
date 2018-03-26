@@ -1,8 +1,9 @@
 ---
 title: golang中的range迭代
-date: 2018-03-19 22:47:30
 tags: range
 categories: Golang
+abbrlink: 47031
+date: 2018-03-19 22:47:30
 ---
 
 工作中，遍历元素并修改其值是一个很常见的需求，而Golang中使用range遍历slice或者map非常方便，所以遇到此类需求时，我们会自然而然地想到使用range。
