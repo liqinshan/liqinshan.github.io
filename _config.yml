@@ -78,3 +78,11 @@ theme: next
 deploy:
   type: git
   repo: git@github.com:liqinshan/liqinshan.github.io
+
+# Backup
+## Docs: https://zhuanlan.zhihu.com/p/122948913
+backup:
+  type: git
+  theme: next
+  message: backup my blog
+  repo: git@github.com:liqinshan/liqinshan.github.io,backup
