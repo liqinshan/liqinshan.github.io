@@ -4,7 +4,6 @@ categories: java
 tags:
   - java
   - Spring
-  - 阅读笔记
 abbrlink: 129
 date: 2017-04-22 00:09:35
 ---

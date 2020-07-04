@@ -2,7 +2,6 @@
 title: venv创建python虚拟环境
 tags:
   - venv
-  - 虚拟环境
 categories: python
 abbrlink: 43617
 date: 2017-01-03 09:59:38

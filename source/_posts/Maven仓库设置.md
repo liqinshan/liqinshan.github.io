@@ -2,7 +2,6 @@
 title: Maven仓库设置
 tags:
   - java
-  - maven
 categories: java
 abbrlink: 41722
 date: 2017-06-19 18:50:43
