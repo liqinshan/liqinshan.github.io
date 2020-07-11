@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="Live And Learn">
 <meta property="og:description" content="刚参加工作时，喜欢追求一些很炫的技法和tricky的表达，但是工作时间久了以后，经常感觉知识不够用，这才发现，大学里那些枯燥无味的基础理论知识才是最值得学习的，这些曾经被我们不屑一顾的东西需要被重新拾起。">
 <meta property="og:image" content="http://liqinshan.github.io/images/third-edition.jpeg">
-<meta property="og:updated_time" content="2020-07-04T11:37:25.657Z">
+<meta property="og:updated_time" content="2020-07-11T07:26:12.728Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统(一)">
 <meta name="twitter:description" content="刚参加工作时，喜欢追求一些很炫的技法和tricky的表达，但是工作时间久了以后，经常感觉知识不够用，这才发现，大学里那些枯燥无味的基础理论知识才是最值得学习的，这些曾经被我们不屑一顾的东西需要被重新拾起。">
@@ -344,7 +344,7 @@
       
         <p>刚参加工作时，喜欢追求一些很炫的技法和tricky的表达，但是工作时间久了以后，经常感觉知识不够用，这才发现，大学里那些枯燥无味的基础理论知识才是最值得学习的，这些曾经被我们不屑一顾的东西需要被重新拾起。</p>
 <a id="more"></a>
-<p>这篇文章重新学习计算机系统的信息表示和处理，学习资料为《深入理解计算机系统》，第2版，2011年出版。</p>
+<p>这篇文章重新学习计算机系统的信息表示和处理，手头的学习资料是《深入理解计算机系统》，第2版，2011年出版。</p>
 <p>下图为第3版的封面：</p>
 <p><img src="/images/third-edition.jpeg" alt="第3版" style="zoom: 50%;"></p>
 <h3 id="二进制信号（bit）"><a href="#二进制信号（bit）" class="headerlink" title="二进制信号（bit）"></a>二进制信号（bit）</h3><p>现代计算机存储和处理的信息是以二值信号表示，这些二值信号（即二进制数字）称为bit，或位。计算机使用二进制表示法，是因为对计算机而言，二值信号更容易被表示、存储和传输，就像人类有10根手指，使用十进制表示法更自然。</p>
@@ -412,15 +412,26 @@
 <p>布尔代数的内容不再复述在这里。</p>
 <p>C语言使用布尔运算符支持了一种特性：按位布尔运算，具体如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">OR： 按位或，运算符为 |</div><div class="line">AND：按位与，运算符为 &amp;</div><div class="line">NOT：按位取反，运算符为 ~</div><div class="line">XOR：按位异或，运算符为 ^</div></pre></td></tr></table></figure>
+<p>###位向量运算</p>
+<p>上述4个按位布尔运算可以扩展为位向量的运算。</p>
+<p>所谓<strong>位向量</strong>，指的是：<strong>固定长度为w，且由0和1组成的串。</strong>位向量的运算，定义为向量的每个对应元素之间的布尔运算。</p>
+<p>举例，假设w=4，向量a=[0110]，b=[1100]，那么它们的4种位运算a&amp;b、a|b、a^b、~b，将分别得到以下结果：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">  <span class="number">0110</span>              <span class="number">0110</span>              <span class="number">0110</span>            </div><div class="line">&amp; <span class="number">1100</span>            | <span class="number">1100</span>            ^ <span class="number">1100</span>          ~ <span class="number">1100</span></div><div class="line">-------           -------           -------         -------</div><div class="line">  <span class="number">0100</span>              <span class="number">1110</span>              <span class="number">1010</span>            <span class="number">0011</span></div></pre></td></tr></table></figure>
 <h3 id="逻辑运算"><a href="#逻辑运算" class="headerlink" title="逻辑运算"></a>逻辑运算</h3><p>C语言提供了一组逻辑运算符，分别对应命题逻辑中的OR、AND、NOT，具体如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">OR： 或，运算符为 ||</div><div class="line">AND：与，运算符为 &amp;&amp;</div><div class="line">NOT：非，运算符为 !</div></pre></td></tr></table></figure>
-<p>逻辑运算符与位运算符容易混淆，但是他们是完全不同的东西。</p>
+<p>逻辑运算符与位运算符容易混淆，但是他们是完全不同的东西。内容不再展开。</p>
 <h3 id="移位运算"><a href="#移位运算" class="headerlink" title="移位运算"></a>移位运算</h3><p>C语言中，移位运算有两种：左移和右移。</p>
 <p>左移：对于一个操作数x，左移k位，即丢弃最高的k位（最左的k位），并在最右端补充k个0</p>
 <p>右移：有两种，一种是逻辑右移，一种是算术右移</p>
 <p>逻辑右移与左移类似，丢弃最低的k位，并在最左端补充k个0；而算术右移补同样丢弃最低的k位，但是左端补充的不是0，而是操作数的最高有效位。算术右移适用于有符号整数。</p>
 <p>对于右移，C语言中并没有明确定义使用哪个类型的右移，但是几乎所有的编译器都对有符号数使用算术右移，对无符号数使用逻辑右移。</p>
 <p>移位运算常用于优化整数运算。大多数机器上，整数的乘法运算和除法运算都比较慢，而加法、减法、位运算、移位运算比较快。一般而言，乘法需要10个或者更多的时钟周期，除法需要30个或者更多的时钟周期，而其它几种运算，只需要一个时钟周期，所以编译器经常会使用移位运算来优化运算速度。</p>
+<h3 id="扩展阅读：位掩码的使用"><a href="#扩展阅读：位掩码的使用" class="headerlink" title="扩展阅读：位掩码的使用"></a>扩展阅读：位掩码的使用</h3><p>书中在位运算部分，提到位向量掩码，并在练习题中举了一个示例题：红、绿、蓝三种颜色的不同混合可以在计算机屏幕上产生彩色的画面，三种颜色可以使用长度为3的位向量表示，那么颜色向量的不同位运算结果分别是什么，分别代表哪些颜色。</p>
+<p>实际上，位掩码权限系统中的应用更为典型，Linux的权限系统就是使用位掩码来构建的。那么位掩码是如何来表示和判断权限的？</p>
+<p>以最常用的4种权限CURD为例，假设一个用户拥有Create、Update、Read权限，常见的权限表示方式为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Permission.Create = true</div><div class="line">Permission.Update = true</div><div class="line">Permission.Read = true</div><div class="line">Permission.Delete = false</div></pre></td></tr></table></figure>
+<p>我们可以使用位掩码来简化这种方式：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> (</div><div class="line">  createFlag = <span class="number">0x01</span></div><div class="line">  updateFlag = <span class="number">0x02</span></div><div class="line">  readFlag =   <span class="number">0x04</span></div><div class="line">  deleteFlag = <span class="number">0x08</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="comment">// 初始权限</span></div><div class="line">permissionFlag = <span class="number">0x00</span></div><div class="line"></div><div class="line"><span class="comment">// 添加Create权限. 添加权限使用|位运算</span></div><div class="line"><span class="comment">// permission = 0000 | 0001 = 0001</span></div><div class="line">permissionFlag |= createFlag</div><div class="line"></div><div class="line"><span class="comment">// 再添加一个Update权限</span></div><div class="line"><span class="comment">// permission = 0001 | 0010 = 0011</span></div><div class="line">permissionFlasg |= updateFlag</div><div class="line"></div><div class="line"><span class="comment">// 判断是否有Create权限. 判断权限使用&amp;位运算 </span></div><div class="line"><span class="comment">// 0011 &amp; 0001 = 0001</span></div><div class="line">permissionFlag &amp; createFlag != <span class="number">0</span></div><div class="line"></div><div class="line"><span class="comment">// 判断是否有Update权限</span></div><div class="line"><span class="comment">// 0011 &amp; 0010 = 0010</span></div><div class="line">permissionFlag &amp; updateFlag != <span class="number">0</span></div><div class="line"></div><div class="line"><span class="comment">// 删除权限：删除Update权限. 计算方式为：先取反，再做AND位运算</span></div><div class="line"><span class="comment">// permission = 0011 &amp; (~0010) = 0011 &amp; 1101 = 0001</span></div><div class="line">permissionFlag &amp;= ~updateFlag</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -595,7 +606,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#二进制信号（bit）"><span class="nav-number">1.</span> <span class="nav-text">二进制信号（bit）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字节（byte）"><span class="nav-number">2.</span> <span class="nav-text">字节（byte）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十六进制表示法（0x-0X）"><span class="nav-number">3.</span> <span class="nav-text">十六进制表示法（0x|0X）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据大小（size）"><span class="nav-number">4.</span> <span class="nav-text">数据大小（size）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#大端法和小端法（big-endian-little-endian）"><span class="nav-number">5.</span> <span class="nav-text">大端法和小端法（big endian|little endian）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文本编码"><span class="nav-number">6.</span> <span class="nav-text">文本编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#布尔代数与位运算"><span class="nav-number">7.</span> <span class="nav-text">布尔代数与位运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑运算"><span class="nav-number">8.</span> <span class="nav-text">逻辑运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移位运算"><span class="nav-number">9.</span> <span class="nav-text">移位运算</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#二进制信号（bit）"><span class="nav-number">1.</span> <span class="nav-text">二进制信号（bit）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字节（byte）"><span class="nav-number">2.</span> <span class="nav-text">字节（byte）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十六进制表示法（0x-0X）"><span class="nav-number">3.</span> <span class="nav-text">十六进制表示法（0x|0X）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据大小（size）"><span class="nav-number">4.</span> <span class="nav-text">数据大小（size）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#大端法和小端法（big-endian-little-endian）"><span class="nav-number">5.</span> <span class="nav-text">大端法和小端法（big endian|little endian）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文本编码"><span class="nav-number">6.</span> <span class="nav-text">文本编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#布尔代数与位运算"><span class="nav-number">7.</span> <span class="nav-text">布尔代数与位运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑运算"><span class="nav-number">8.</span> <span class="nav-text">逻辑运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移位运算"><span class="nav-number">9.</span> <span class="nav-text">移位运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展阅读：位掩码的使用"><span class="nav-number">10.</span> <span class="nav-text">扩展阅读：位掩码的使用</span></a></li></ol></div>
             
 
           </div>
