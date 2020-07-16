@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="装饰器," />
+  <meta name="keywords" content="计算机基础," />
 
 
 
@@ -79,16 +79,18 @@
 
 
 
-<meta name="description" content="Python装饰器是个不错的东西，应用场景也比较广泛。">
+<meta name="description" content="本篇为《深入理解计算机系统》学习笔记的第2篇：整数。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python装饰器">
-<meta property="og:url" content="http://liqinshan.github.io/posts/43106/index.html">
+<meta property="og:title" content="深入理解计算机系统(二)">
+<meta property="og:url" content="http://liqinshan.github.io/posts/17185/index.html">
 <meta property="og:site_name" content="Live And Learn">
-<meta property="og:description" content="Python装饰器是个不错的东西，应用场景也比较广泛。">
-<meta property="og:updated_time" content="2018-03-19T13:39:26.892Z">
+<meta property="og:description" content="本篇为《深入理解计算机系统》学习笔记的第2篇：整数。">
+<meta property="og:image" content="http://liqinshan.github.io/images/int.jpg">
+<meta property="og:updated_time" content="2020-07-16T17:49:49.240Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Python装饰器">
-<meta name="twitter:description" content="Python装饰器是个不错的东西，应用场景也比较广泛。">
+<meta name="twitter:title" content="深入理解计算机系统(二)">
+<meta name="twitter:description" content="本篇为《深入理解计算机系统》学习笔记的第2篇：整数。">
+<meta name="twitter:image" content="http://liqinshan.github.io/images/int.jpg">
 
 
 
@@ -118,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://liqinshan.github.io/posts/43106/"/>
+  <link rel="canonical" href="http://liqinshan.github.io/posts/17185/"/>
 
 
 
 
 
-  <title>Python装饰器 | Live And Learn</title>
+  <title>深入理解计算机系统(二) | Live And Learn</title>
   
 
 
@@ -251,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://liqinshan.github.io/posts/43106/">
+    <link itemprop="mainEntityOfPage" href="http://liqinshan.github.io/posts/17185/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="LQS">
@@ -268,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Python装饰器</h1>
+          <h1 class="post-title" itemprop="name headline">深入理解计算机系统(二)</h1>
         
 
         <div class="post-meta">
@@ -280,8 +282,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-01T12:02:55+08:00">
-                2017-01-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-17T00:12:21+08:00">
+                2020-07-17
               </time>
             
 
@@ -303,8 +305,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
+                  <a href="/categories/计算机基础/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机基础</span>
                   </a>
                 </span>
 
@@ -340,9 +342,23 @@
       
 
       
-        <p>Python装饰器是个不错的东西，应用场景也比较广泛。<br><a id="more"></a><br>之前写过一个Saltstack的模块，用于查询我们的CMDB。查询操作可能会由于网络抖动等原因失败，如果查询失败，会再次进行尝试，设定它会尝试三次。这个装饰器的一个典型应用场景，而且这个装饰器还带参数。之前没怎么用过待参数的装饰器，虽然技术含量也不高，还是记录一下。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> logging</div><div class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</div><div class="line"><span class="keyword">from</span> requests.exceptions <span class="keyword">import</span> RequestException, Timeout, HTTPError</div><div class="line"></div><div class="line">log = logging.getLogger(__name__)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span><span class="params">(times, *exception_types)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">outer</span><span class="params">(func)</span>:</span></div><div class="line"><span class="meta">        @wraps(func)</span></div><div class="line">        <span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">(*args, **kwargs)</span>:</span></div><div class="line">            <span class="keyword">for</span> n <span class="keyword">in</span> range(times):</div><div class="line">                <span class="keyword">try</span>:</div><div class="line">                    <span class="keyword">return</span> func(*args, **kwargs)</div><div class="line">                <span class="keyword">except</span> RequestException:</div><div class="line">                    <span class="keyword">continue</span></div><div class="line">        <span class="keyword">return</span> inner</div><div class="line">    <span class="keyword">return</span> outer</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">QueryCMDB</span>:</span></div><div class="line">    ...</div><div class="line"></div><div class="line"><span class="meta">    @retry(3, Timeout, HTTPError)</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_get_data</span><span class="params">(self, page, size, timeout, **q_args)</span>:</span></div><div class="line">        ...</div><div class="line">        url = self.url_concat(...)</div><div class="line"></div><div class="line">        log.info(<span class="string">'url: &#123;&#125;'</span>.format(url))</div><div class="line">        <span class="keyword">with</span> self.session <span class="keyword">as</span> s:</div><div class="line">            resp = s.get(url, headers=self.xheaders(...), timeout=timeout)</div><div class="line">        <span class="keyword">return</span> resp.json()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">query</span><span class="params">(self, fields=None, timeout=None, page=<span class="number">1</span>, size=<span class="number">50</span>, **kwargs)</span>:</span></div><div class="line">        data = self._get_data(page=page, size=size, timeout=timeout, **kwargs)</div><div class="line">        <span class="keyword">if</span> data:</div><div class="line">            <span class="keyword">pass</span></div><div class="line"></div><div class="line">client = QueryCMDB(...)</div></pre></td></tr></table></figure>
-<p>对于我的这个模块而言，捕获的是RequestException，Timout和HTTPError都是它的子类，所以直接在里面写死了，所以不是很通用，但是可以很容易的进行抽象一下，提炼成更通用的装饰器。<br>就这样。</p>
+        <p>本篇为《深入理解计算机系统》学习笔记的第2篇：整数。</p>
+<a id="more"></a>
+<p>网络上找到了该书的第3版，pdf文件，以后的学习会以这个版本的内容为主，夹杂着个人积累的一些知识。</p>
+<p>我们很熟悉整数在数学属性上的表示，它是我们从小学甚至幼儿园就已经接触的知识了，但是现在我们把视线转向计算机，看计算机是如何使用位来编码和定义整数的，这将为我们打开一个完全不同的世界。</p>
+<p><a href="https://liqinshan.github.io/posts/33669/">第一篇笔记</a> 中已经讲过，数据类型的长度（数据大小）受字长影响而有差异。64位系统上，C语言整形数据类型的典型取值范围如下：</p>
+<p><img src="/images/int.jpg" alt="整形数据类型大小"></p>
+<p>从图中可以看出，负数的范围比正数的范围大1，这跟它的位编码方式有关，涉及到原码、反码、补码的概念和原理。</p>
+<h3 id="原码、反码、补码"><a href="#原码、反码、补码" class="headerlink" title="原码、反码、补码"></a>原码、反码、补码</h3><p>数学计算中的整数有正数和负数，而计算机里只有二进制的0和1，为了表示正数和负数，计算机使用一个bit的符号位0或1来表示正号（+）或负号（-），符号位放在数值二进制形式的最高位。为了将符号位和数值一起编码，计算机设计了多种编码方式来实现位向量到整数的映射，重要的几个编码方式就是原码、补码、反码。</p>
+<p>书中在这部分内容中有大量的原理和公式，我们抛开复杂的原理和公式，对于原码、反码、补码的定义，简单概括说就是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">正数的原码、反码、补码都是它自己</div><div class="line">负数的原码是它自己；</div><div class="line">负数的反码：符号位不变，其余各位取反</div><div class="line">负数的补码：符号位不变，其余各位取反，最后末位加<span class="number">1</span>，即在反码的基础上末位加<span class="number">1</span></div><div class="line"></div><div class="line">数字    原码         反码         补码</div><div class="line">+<span class="number">1</span>     <span class="number">0000</span> <span class="number">0001</span>    <span class="number">0000</span> <span class="number">0001</span>    <span class="number">0000</span> <span class="number">0001</span></div><div class="line"><span class="number">-1</span>     <span class="number">1000</span> <span class="number">0001</span>    <span class="number">1111</span> <span class="number">1110</span>    <span class="number">1111</span> <span class="number">1111</span></div></pre></td></tr></table></figure>
+<p>计算机为什么使用这些编码方式来表示有符号整数呢？是为了减少电路设计的复杂度，提高运算的速度，它把符号位也作为数值直接参与运算，但是由于符号位并不是真正的数值，所以才有了这些编码方式，方便转换和运算。</p>
+<p>当某些场景需要使用负数值时，对有符号整数使用的最常见编码形式就是补码。有趣的是，C语言并没有要求使用哪种方式来表示有符号整数，但是几乎所有的机器都是这么做的；而在Java语言中，明确要求采用补码来表示整数。</p>
+<h3 id="有符号数和无符号数之间的转换"><a href="#有符号数和无符号数之间的转换" class="headerlink" title="有符号数和无符号数之间的转换"></a>有符号数和无符号数之间的转换</h3><p>书中在这一部分，也涉及到了大量的原理和公式。抛开这些原理和公式，结论是：有符号数到无符号数的隐式强制转换有可能会导致错误或者漏洞，避免这类错误的一种方法是绝不使用无符号数。</p>
+<p>实际上，除C语言以外，很少有语言支持无符号数，比如Java只支持有符号数，并且要求以补码运算来实现，移位运算在这个场景中发挥着重要的作用。</p>
+<p>对于无符号数而言，仅当被看作是位的集合而没有任何数字意义时，无符号数才是非常有用的，比如往一个数值中放入各种布尔条件的标记（flag）。地址同样如此，也是无符号的。题外话，第一篇笔记讲到的权限系统中位掩码的使用，也是如此。</p>
+<h3 id="整数运算"><a href="#整数运算" class="headerlink" title="整数运算"></a>整数运算</h3><p>两个正数相加会得到一个负数？表达式x &lt; y和x - y &lt; 0会产生不同的结果？这些的确都是有可能的。</p>
+<p>待续。。</p>
 
       
     </div>
@@ -360,7 +376,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/装饰器/" rel="tag"># 装饰器</a>
+            <a href="/tags/计算机基础/" rel="tag"># 计算机基础</a>
           
         </div>
       
@@ -373,8 +389,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/posts/5723/" rel="next" title="Tornado源码学习: httpserver & ioloop">
-                <i class="fa fa-chevron-left"></i> Tornado源码学习: httpserver & ioloop
+              <a href="/posts/33669/" rel="next" title="深入理解计算机系统(一)">
+                <i class="fa fa-chevron-left"></i> 深入理解计算机系统(一)
               </a>
             
           </div>
@@ -382,10 +398,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/posts/8190/" rel="prev" title="Python文件处理">
-                Python文件处理 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -437,8 +449,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -502,6 +523,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#原码、反码、补码"><span class="nav-number">1.</span> <span class="nav-text">原码、反码、补码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有符号数和无符号数之间的转换"><span class="nav-number">2.</span> <span class="nav-text">有符号数和无符号数之间的转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整数运算"><span class="nav-number">3.</span> <span class="nav-text">整数运算</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
