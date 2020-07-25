@@ -86,10 +86,10 @@
 <meta property="og:site_name" content="Live And Learn">
 <meta property="og:description" content="本篇为《深入理解计算机系统》学习笔记的第2篇：整数。">
 <meta property="og:image" content="http://liqinshan.github.io/images/int.jpg">
-<meta property="og:image" content="http://liqinshan.github.io/Users/lqs/pp/liqinshan.github.io/source/images/原码.png">
-<meta property="og:image" content="http://liqinshan.github.io/Users/lqs/pp/liqinshan.github.io/source/images/补码.png">
-<meta property="og:image" content="http://liqinshan.github.io/Users/lqs/pp/liqinshan.github.io/source/images/补码加法.jpg">
-<meta property="og:updated_time" content="2020-07-25T17:11:51.651Z">
+<meta property="og:image" content="http://liqinshan.github.io/images/原码.png">
+<meta property="og:image" content="http://liqinshan.github.io/images/补码.png">
+<meta property="og:image" content="http://liqinshan.github.io/images/补码加法.jpg">
+<meta property="og:updated_time" content="2020-07-25T17:19:19.937Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统(二)">
 <meta name="twitter:description" content="本篇为《深入理解计算机系统》学习笔记的第2篇：整数。">
@@ -366,8 +366,8 @@
 <h3 id="扩展阅读：图示计算机为什么使用补码表示整数"><a href="#扩展阅读：图示计算机为什么使用补码表示整数" class="headerlink" title="扩展阅读：图示计算机为什么使用补码表示整数"></a>扩展阅读：图示计算机为什么使用补码表示整数</h3><table>
 <thead>
 <tr>
-<th style="text-align:center"><img src="/Users/lqs/pp/liqinshan.github.io/source/images/原码.png" alt="原码" style="zoom:48%;"></th>
-<th style="text-align:center"><img src="/Users/lqs/pp/liqinshan.github.io/source/images/补码.png" alt="补码" style="zoom:48%;"></th>
+<th style="text-align:center"><img src="/images/原码.png" alt="原码" style="zoom:48%;"></th>
+<th style="text-align:center"><img src="/images/补码.png" alt="补码" style="zoom:48%;"></th>
 </tr>
 </thead>
 <tbody>
@@ -388,7 +388,7 @@
 <p>再看个示例：</p>
 <p>开篇提到过，无符号short类型的整数的取值范围是0 ~ 65535，假设整数x的值为65535，那么x + 1的值是多少？答案是0。原因是，x+1的结果65536超出了2<sup>16</sup> - 1的取值范围，对其进制取模运算：65536 mod 2<sup>16</sup>，结果为0。</p>
 <h4 id="补码加法"><a href="#补码加法" class="headerlink" title="补码加法"></a>补码加法</h4><p> 抛开公式，直接上结论：补码表示的是有符号整数，两个w位的有符号整数进行加法运算，其结果的取值范围也可能需要w+1位向量来表示，所以同样需要截断。但是与无符号加法不同的是，补码的溢出可能为正溢出，也可能为负溢出，所以补码加法的结果可能有3种：</p>
-<p><img src="/Users/lqs/pp/liqinshan.github.io/source/images/补码加法.jpg" alt="补码加法" style="zoom:80%;"></p>
+<p><img src="/images/补码加法.jpg" alt="补码加法" style="zoom:80%;"></p>
 <p>实际上，补码加法是先按照无符号加法进制运算，然后进制无符号和有符号的转换，最终得到结果。</p>
 <h4 id="乘法与除法"><a href="#乘法与除法" class="headerlink" title="乘法与除法"></a>乘法与除法</h4><p>与加法类似，并且计算机一般会做特别的优化，使用加法运算和移位运算来替代，提高运算速度。</p>
 <h3 id="关于整数运算的最后思考"><a href="#关于整数运算的最后思考" class="headerlink" title="关于整数运算的最后思考"></a>关于整数运算的最后思考</h3><p>计算机执行的整数运算，实际上是一种模运算形式。表示数字的有限字长限制了值的可能取值范围，运算结果可能溢出。</p>
