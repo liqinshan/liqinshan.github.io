@@ -86,7 +86,10 @@
 <meta property="og:site_name" content="Live And Learn">
 <meta property="og:description" content="本篇为《深入理解计算机系统》学习笔记的第2篇：整数。">
 <meta property="og:image" content="http://liqinshan.github.io/images/int.jpg">
-<meta property="og:updated_time" content="2020-07-16T17:49:49.240Z">
+<meta property="og:image" content="http://liqinshan.github.io/Users/lqs/pp/liqinshan.github.io/source/images/原码.png">
+<meta property="og:image" content="http://liqinshan.github.io/Users/lqs/pp/liqinshan.github.io/source/images/补码.png">
+<meta property="og:image" content="http://liqinshan.github.io/Users/lqs/pp/liqinshan.github.io/source/images/补码加法.jpg">
+<meta property="og:updated_time" content="2020-07-25T17:11:51.651Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统(二)">
 <meta name="twitter:description" content="本篇为《深入理解计算机系统》学习笔记的第2篇：整数。">
@@ -344,21 +347,52 @@
       
         <p>本篇为《深入理解计算机系统》学习笔记的第2篇：整数。</p>
 <a id="more"></a>
-<p>网络上找到了该书的第3版，pdf文件，以后的学习会以这个版本的内容为主，夹杂着个人积累的一些知识。</p>
-<p>我们很熟悉整数在数学属性上的表示，它是我们从小学甚至幼儿园就已经接触的知识了，但是现在我们把视线转向计算机，看计算机是如何使用位来编码和定义整数的，这将为我们打开一个完全不同的世界。</p>
+<p>我们很熟悉整数在数学属性上的表示，小学就已经接触过了，但是现在我们把视线转向计算机，看计算机是如何使用位向量来编码和定义整数的，这将为我们打开一个完全不同的世界。</p>
 <p><a href="https://liqinshan.github.io/posts/33669/">第一篇笔记</a> 中已经讲过，数据类型的长度（数据大小）受字长影响而有差异。64位系统上，C语言整形数据类型的典型取值范围如下：</p>
 <p><img src="/images/int.jpg" alt="整形数据类型大小"></p>
 <p>从图中可以看出，负数的范围比正数的范围大1，这跟它的位编码方式有关，涉及到原码、反码、补码的概念和原理。</p>
-<h3 id="原码、反码、补码"><a href="#原码、反码、补码" class="headerlink" title="原码、反码、补码"></a>原码、反码、补码</h3><p>数学计算中的整数有正数和负数，而计算机里只有二进制的0和1，为了表示正数和负数，计算机使用一个bit的符号位0或1来表示正号（+）或负号（-），符号位放在数值二进制形式的最高位。为了将符号位和数值一起编码，计算机设计了多种编码方式来实现位向量到整数的映射，重要的几个编码方式就是原码、补码、反码。</p>
+<h3 id="整数的分类：有符号数与无符号数"><a href="#整数的分类：有符号数与无符号数" class="headerlink" title="整数的分类：有符号数与无符号数"></a>整数的分类：有符号数与无符号数</h3><p>C和C++对有符号整数和无符整号数都支持，默认为有符号整数，Java只支持有符号整数。</p>
+<h3 id="整数的位编码方式：原码、反码、补码"><a href="#整数的位编码方式：原码、反码、补码" class="headerlink" title="整数的位编码方式：原码、反码、补码"></a>整数的位编码方式：原码、反码、补码</h3><p>数学计算中的整数有正数、0、负数，计算机同样要能够表示正数、0、负数 ，但是它的底层只有二进制的0和1，如何使用位向量来表示符号呢？</p>
+<p>为了能够表示正数和负数，计算机使用一个bit的符号位0或1来表示正号（+）或负号（-），符号位放在数值二进制形式的最高位，并且计算机设计了多种编码方式来实现位向量到整数的映射，重要的几个编码方式：原码、补码、反码。</p>
 <p>书中在这部分内容中有大量的原理和公式，我们抛开复杂的原理和公式，对于原码、反码、补码的定义，简单概括说就是：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">正数的原码、反码、补码都是它自己</div><div class="line">负数的原码是它自己；</div><div class="line">负数的反码：符号位不变，其余各位取反</div><div class="line">负数的补码：符号位不变，其余各位取反，最后末位加<span class="number">1</span>，即在反码的基础上末位加<span class="number">1</span></div><div class="line"></div><div class="line">数字    原码         反码         补码</div><div class="line">+<span class="number">1</span>     <span class="number">0000</span> <span class="number">0001</span>    <span class="number">0000</span> <span class="number">0001</span>    <span class="number">0000</span> <span class="number">0001</span></div><div class="line"><span class="number">-1</span>     <span class="number">1000</span> <span class="number">0001</span>    <span class="number">1111</span> <span class="number">1110</span>    <span class="number">1111</span> <span class="number">1111</span></div></pre></td></tr></table></figure>
 <p>计算机为什么使用这些编码方式来表示有符号整数呢？是为了减少电路设计的复杂度，提高运算的速度，它把符号位也作为数值直接参与运算，但是由于符号位并不是真正的数值，所以才有了这些编码方式，方便转换和运算。</p>
 <p>当某些场景需要使用负数值时，对有符号整数使用的最常见编码形式就是补码。有趣的是，C语言并没有要求使用哪种方式来表示有符号整数，但是几乎所有的机器都是这么做的；而在Java语言中，明确要求采用补码来表示整数。</p>
-<h3 id="有符号数和无符号数之间的转换"><a href="#有符号数和无符号数之间的转换" class="headerlink" title="有符号数和无符号数之间的转换"></a>有符号数和无符号数之间的转换</h3><p>书中在这一部分，也涉及到了大量的原理和公式。抛开这些原理和公式，结论是：有符号数到无符号数的隐式强制转换有可能会导致错误或者漏洞，避免这类错误的一种方法是绝不使用无符号数。</p>
-<p>实际上，除C语言以外，很少有语言支持无符号数，比如Java只支持有符号数，并且要求以补码运算来实现，移位运算在这个场景中发挥着重要的作用。</p>
-<p>对于无符号数而言，仅当被看作是位的集合而没有任何数字意义时，无符号数才是非常有用的，比如往一个数值中放入各种布尔条件的标记（flag）。地址同样如此，也是无符号的。题外话，第一篇笔记讲到的权限系统中位掩码的使用，也是如此。</p>
-<h3 id="整数运算"><a href="#整数运算" class="headerlink" title="整数运算"></a>整数运算</h3><p>两个正数相加会得到一个负数？表达式x &lt; y和x - y &lt; 0会产生不同的结果？这些的确都是有可能的。</p>
-<p>待续。。</p>
+<p>对于无符号数而言，仅当被看作是位的集合而没有任何数字意义时，无符号数才是非常有用的，比如往一个数值中放入各种布尔条件的标记（flag）。地址同样如此，也是无符号的。</p>
+<h4 id="有符号数和无符号数之间的转换"><a href="#有符号数和无符号数之间的转换" class="headerlink" title="有符号数和无符号数之间的转换"></a>有符号数和无符号数之间的转换</h4><p>抛开复杂的原理和公式，计算机是从向量位的角度看待整数的，在有符号数和无符号数之间进行转换时，底层的位表示不变，但是位解释可能发生了变化（表示符号的最高位有可能发生变化），所以值有可能会发生；</p>
+<p>C语言中，有符号数到无符号数的隐式强制转换有可能会导致错误或者漏洞，避免这类错误的一种方法是绝不使用无符号数。</p>
+<h4 id="不同字长的整数之间的转换"><a href="#不同字长的整数之间的转换" class="headerlink" title="不同字长的整数之间的转换"></a>不同字长的整数之间的转换</h4><p>将一个较小的类型转换成一个较大的类型比较简单，无符号数使用零扩展运算，补码数字执行符号扩展。但是从较大类型转换为较小类型时，需要截断。简单说，将一个w位的数字截断为k位数字时，我们会丢弃最高的w-k位。</p>
+<p>对于w位的无符号数x而言，截断到k位，相当于计算x mod 2<sup>k</sup>。在整数运算中会用到截断。</p>
+<h3 id="扩展阅读：图示计算机为什么使用补码表示整数"><a href="#扩展阅读：图示计算机为什么使用补码表示整数" class="headerlink" title="扩展阅读：图示计算机为什么使用补码表示整数"></a>扩展阅读：图示计算机为什么使用补码表示整数</h3><table>
+<thead>
+<tr>
+<th style="text-align:center"><img src="/Users/lqs/pp/liqinshan.github.io/source/images/原码.png" alt="原码" style="zoom:48%;"></th>
+<th style="text-align:center"><img src="/Users/lqs/pp/liqinshan.github.io/source/images/补码.png" alt="补码" style="zoom:48%;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">整数的原码表示</td>
+<td style="text-align:center">整数的补码表示</td>
+</tr>
+</tbody>
+</table>
+<p>计算机使用的整数默认为有符号数。如果使用原码表示有符号数，如上图（左）所示，运算时会有两个问题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">0有两种编码方式</div><div class="line">1 +（-1）的结果不为0</div></pre></td></tr></table></figure>
+<p>换成补码方式进制编码，如上图（右）所示，就可以解决上述两个问题。</p>
+<h3 id="整数运算"><a href="#整数运算" class="headerlink" title="整数运算"></a>整数运算</h3><p>整数运算无非加减乘除，但是计算机把整数视为向量位，它的四则运算方式与我们常规认知上的四则运算会有不同。计算机中的整数运算面临着溢出的问题，常见的现象：两个正数相加，结果却为负数。</p>
+<h4 id="无符号加法"><a href="#无符号加法" class="headerlink" title="无符号加法"></a>无符号加法</h4><p>假设两个非负整数x、y，都是w位，其取值范围满足：$0 &lt;= x, y &lt;= 2^w -1$，那么，它们两者之和的取值范围满足：0 &lt;= x + y &lt;= 2<sup>w+1</sup>​ - 2，意味着，这个和可能需要w+1位。</p>
+<p>以此类推，w+1位的整数相加，其和可能需要w+2位，这种现象意味着，要想完整表达算术运算的结果，就不能对它的长度做任何限制。但是在实际操作中，我们不可能让它无限膨胀，常规做法是截断。</p>
+<p>举例如下：</p>
+<p>考虑两个4位的整数x、y，其值分别为9、12，其位向量分别是1001、1100，对两个整数进制加法运算，其值为21，位向量需要5位表示，为10101，丢掉最高位1，结果为101，即5，而5恰好是21 mod 2<sup>4</sup> 的结果，所以，无符号整数的加法实际是一种模运算。</p>
+<p>再看个示例：</p>
+<p>开篇提到过，无符号short类型的整数的取值范围是0 ~ 65535，假设整数x的值为65535，那么x + 1的值是多少？答案是0。原因是，x+1的结果65536超出了2<sup>16</sup> - 1的取值范围，对其进制取模运算：65536 mod 2<sup>16</sup>，结果为0。</p>
+<h4 id="补码加法"><a href="#补码加法" class="headerlink" title="补码加法"></a>补码加法</h4><p> 抛开公式，直接上结论：补码表示的是有符号整数，两个w位的有符号整数进行加法运算，其结果的取值范围也可能需要w+1位向量来表示，所以同样需要截断。但是与无符号加法不同的是，补码的溢出可能为正溢出，也可能为负溢出，所以补码加法的结果可能有3种：</p>
+<p><img src="/Users/lqs/pp/liqinshan.github.io/source/images/补码加法.jpg" alt="补码加法" style="zoom:80%;"></p>
+<p>实际上，补码加法是先按照无符号加法进制运算，然后进制无符号和有符号的转换，最终得到结果。</p>
+<h4 id="乘法与除法"><a href="#乘法与除法" class="headerlink" title="乘法与除法"></a>乘法与除法</h4><p>与加法类似，并且计算机一般会做特别的优化，使用加法运算和移位运算来替代，提高运算速度。</p>
+<h3 id="关于整数运算的最后思考"><a href="#关于整数运算的最后思考" class="headerlink" title="关于整数运算的最后思考"></a>关于整数运算的最后思考</h3><p>计算机执行的整数运算，实际上是一种模运算形式。表示数字的有限字长限制了值的可能取值范围，运算结果可能溢出。</p>
+<p>上面这句话，是书中本章节的最后思考，但是我的最后思考是：大概明白了溢出是怎么回事，细节上还是有点迷糊。最后给出酷壳的一篇文章链接 ，比较老了，讲的就是<a href="https://coolshell.cn/articles/11466.html" target="_blank" rel="external">《C语言的整形溢出问题》</a></p>
 
       
     </div>
@@ -533,7 +567,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#原码、反码、补码"><span class="nav-number">1.</span> <span class="nav-text">原码、反码、补码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有符号数和无符号数之间的转换"><span class="nav-number">2.</span> <span class="nav-text">有符号数和无符号数之间的转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整数运算"><span class="nav-number">3.</span> <span class="nav-text">整数运算</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#整数的分类：有符号数与无符号数"><span class="nav-number">1.</span> <span class="nav-text">整数的分类：有符号数与无符号数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整数的位编码方式：原码、反码、补码"><span class="nav-number">2.</span> <span class="nav-text">整数的位编码方式：原码、反码、补码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#有符号数和无符号数之间的转换"><span class="nav-number">2.1.</span> <span class="nav-text">有符号数和无符号数之间的转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不同字长的整数之间的转换"><span class="nav-number">2.2.</span> <span class="nav-text">不同字长的整数之间的转换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展阅读：图示计算机为什么使用补码表示整数"><span class="nav-number">3.</span> <span class="nav-text">扩展阅读：图示计算机为什么使用补码表示整数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整数运算"><span class="nav-number">4.</span> <span class="nav-text">整数运算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#无符号加法"><span class="nav-number">4.1.</span> <span class="nav-text">无符号加法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#补码加法"><span class="nav-number">4.2.</span> <span class="nav-text">补码加法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#乘法与除法"><span class="nav-number">4.3.</span> <span class="nav-text">乘法与除法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于整数运算的最后思考"><span class="nav-number">5.</span> <span class="nav-text">关于整数运算的最后思考</span></a></li></ol></div>
             
 
           </div>
